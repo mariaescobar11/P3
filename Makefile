@@ -45,4 +45,4 @@ all: release debug
 clean: clean_release clean_debug
 
 doc: ${FILE_RELEASE}
-	ninja doc -C ${BUILD_RELEASE}
+	 ninja doc -C ${BUILD_RELEASE}
