@@ -14,14 +14,14 @@ Ejercicios básicos
   `get_pitch`.
 
    * Complete el cálculo de la autocorrelación e inserte a continuación el código correspondiente.
+   
    ```cpp
-       for (unsigned int l = 0; l < r.size(); ++l) {
+      for (unsigned int l = 0; l < r.size(); ++l) {
              r[l]=0.0F;
             for (unsigned int n=l; n<x.size();n++){
               r[l] += x[n]*x[n-l];
             }
-            r[l] = r[l]/x.size();
-      
+            r[l] = r[l]/x.size();  
     }
    ```
    * Inserte una gŕafica donde, en un *subplot*, se vea con claridad la señal temporal de un segmento de
