@@ -45,6 +45,7 @@ namespace upc {
     switch (win_type) {
     case HAMMING:
       /// \TODO Implement the Hamming window
+
       break;
     case RECT:
     default:
@@ -93,8 +94,15 @@ namespace upc {
 	///    - The lag corresponding to the maximum value of the pitch.
     ///	   .
 	/// In either case, the lag should not exceed that of the minimum value of the pitch.
-    iRMax= r.begin() + npitch_min;
-    unsigned int lag = iRMax - r.begin();
+
+  
+  
+    for(iR= iRMax ;iR < r.begin() + npitch_min; iR++);
+    if (*iR > *iRMax){
+      iRMax =iR;
+    }
+    
+    unsigned int lag = iRMax - iR;
 
     float pot = 10 * log10(r[0]);
 
