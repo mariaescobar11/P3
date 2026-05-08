@@ -25,6 +25,10 @@ Usage:
     get_pitch --version
 
 Options:
+    -p, --pot FLOAT       llindar de potència per la decisió sonor/sord [Default: 0]
+    -1, --r1norm FLOAT    llindar de correlació de 1 per la decisió sonor/sord [Default: 0.6]
+    -M, --rmaxnorm FLOAT  llindar de correlació al max secundari per la decisió sonor/sord [Default: 0.6]
+
     -h, --help  Show this screen
     --version   Show the version of the project
 
@@ -46,6 +50,9 @@ int main(int argc, const char *argv[]) {
 
 	std::string input_wav = args["<input-wav>"].asString();
 	std::string output_txt = args["<output-txt>"].asString();
+  float llindar_pot = stof(args["--pot"].asString());
+  float llindar_r1norm = stof(args["--r1norm"].asString());
+  float llindar_rmaxnorm = stof(args["--rmaxnorm"].asString());
 
   // Read input sound file
   unsigned int rate;
@@ -58,8 +65,8 @@ int main(int argc, const char *argv[]) {
   int n_len = rate * FRAME_LEN;
   int n_shift = rate * FRAME_SHIFT;
 
-  // Define analyzer
-  PitchAnalyzer analyzer(n_len, rate, PitchAnalyzer::RECT, 50, 500);
+  // Define analyzer --> Constructor, passar llindars
+  PitchAnalyzer analyzer(n_len, rate, PitchAnalyzer::RECT, 50, 500, llindar_pot, llindar_r1norm, llindar_rmaxnorm);
 
   /// \TODO
   /// Preprocess the input signal in order to ease pitch estimation. For instance,
