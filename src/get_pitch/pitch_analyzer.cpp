@@ -45,6 +45,15 @@ namespace upc {
     switch (win_type) {
     case HAMMING:
       /// \TODO Implement the Hamming window
+      /** 
+      \DONE Ventana de Hamming implementada
+      \f[
+      w[n] = 0.54 - 0.46 \cdot \cos\left(\frac{2\pi n}{N-1}\right)
+      \f]*/
+      
+      for (unsigned int n = 0; n < frameLen; ++n) {
+          window[n] = 0.54 - 0.46 * cos(2 * M_PI * n / (frameLen - 1));
+      }
 
       break;
     case RECT:
@@ -69,11 +78,33 @@ namespace upc {
     /// \TODO Implement a rule to decide whether the sound is voiced or not.
     /// * You can use the standard features (pot, r1norm, rmaxnorm),
     ///   or compute and use other ones.
-
-    if (r1norm > 0.6 || rmaxnorm > 0.6){
-      return false;
+    
+    /** * \DONE
+     * Implementación de la decisión sonoro/sordo (voiced/unvoiced):
+     * La señal se considera sonora (false) si la correlación de primer orden (r1norm)
+     * o la correlación en el máximo secundario (rmaxnorm) superan el umbral de 0.6.
+     * En caso contrario, se considera sorda (true).
+     */
+    
+    /// Si la potencia es inferior al umbral es sordo
+     if (pot < llindar_pot) {
+        return true; 
     }
-      return true;
+
+    // Si la periodicidad es baja, es sordo (unvoiced)
+    // Usamos los nombres de variables definidas en el docopt
+    if (r1norm < llindar_r1norm || rmaxnorm < llindar_rmaxnorm) {
+        return true;
+    }
+
+    // En caso contrario, es sonoro (voiced)
+    return false;
+
+    ///if (r1norm > 0.6 || rmaxnorm > 0.6){
+    ////  return false;
+   //// }
+     //// return true;
+
   }
 
   float PitchAnalyzer::compute_pitch(vector<float> & x) const {
@@ -99,9 +130,13 @@ namespace upc {
     ///	   .
 	/// In either case, the lag should not exceed that of the minimum value of the pitch.
 
-  
+  /** * \DONE 
+   * Hemos localizado el lag del valor máximo de la autocorrelación fuera del origen.
+   * Se ha optado por iniciar la búsqueda en npitch_min, que corresponde al periodo 
+   * de la frecuencia de pitch máxima permitida (opción 2 del enunciado).
+   */
 
-    for(iR= r.begin() + npitch_min; iR < r.begin() + npitch_max ; iR++){
+  for(iR= r.begin() + npitch_min; iR < r.begin() + npitch_max ; iR++){
         if (*iR > *iRMax){
            iRMax =iR;
          }

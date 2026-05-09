@@ -36,7 +36,28 @@ Ejercicios básicos
    * Determine el mejor candidato para el periodo de pitch localizando el primer máximo secundario de la
      autocorrelación. Inserte a continuación el código correspondiente.
 
+    ```cpp
+    for(iR= r.begin() + npitch_min; iR < r.begin() + npitch_max ; iR++){
+        if (*iR > *iRMax){
+           iRMax =iR;
+         }
+    }
+    
+    unsigned int lag = iRMax - r.begin();
+
+    float pot = 10 * log10(r[0]);
+    ```
+
    * Implemente la regla de decisión sonoro o sordo e inserte el código correspondiente.
+
+    ```cpp
+    if (r1norm > 0.6 || rmaxnorm > 0.6){
+      return false;
+    }
+      return true;
+    ```
+    Implementación de la decisión sonoro/sordo (voiced/unvoiced):
+     * La señal se considera sonora (false) si la correlación de primer orden (r1norm) o la correlación en el máximo secundario (rmaxnorm) superan el umbral de 0.6. En caso contrario, se considera sorda (true).
 
    * Puede serle útil seguir las instrucciones contenidas en el documento adjunto `código.pdf`.
 
@@ -66,6 +87,47 @@ Ejercicios básicos
   * Optimice los parámetros de su sistema de estimación de pitch e inserte una tabla con las tasas de error
     y el *score* TOTAL proporcionados por `pitch_evaluate` en la evaluación de la base de datos 
 	`pitch_db/train`..
+
+Para maximizar la precisión del estimador de pitch, hemos ajustado los umbrales de decisión sonor/sord (unvoiced) y hemos implementado la ventana de Hamming. 
+
+Originalmente, el sistema solo evaluaba la periodicidad mediante la autocorrelación. Hemos mejorado esto añadiendo un umbral de potencia que actúa como filtro previo para eliminar el ruido de fondo. Al descartar los fragmentos con baja energía antes de analizar la autocorrelación, hemos conseguido eliminar prácticamente todos los falsos positivos en las zonas de silencio o ruido.
+
+Además hemos cambiado la lógica cuando miramos la autocorrelación para detectar si es sordo o sonoro, ya que haciéndolo de la forma de antes (si el señal superaba el umbral se le asignaba como señal sonoro) era mucho más permisivo que haciéndolo al revés (si el señal no supera el umbral se asigna como sordo). 
+
+Esta nueva forma es mucho más robusta porque, para que un frame sea detectado como sonoro, ahora debe cumplir todas las condiciones simultáneamente (energía suficiente y alta periodicidad en ambos parámetros).
+
+Con estos cambios hemos pasado de un 64% a un 93%.
+
+Nueva regla de decisión:
+
+```cpp
+    if (pot < llindar_pot) {
+        return true; 
+    }
+
+    if (r1norm < llindar_r1norm || rmaxnorm < llindar_rmaxnorm) {
+        return true;
+    }
+    return false;
+```
+
+
+Tabla con la tasa de error y el *score* TOTAL:
+
+| Métrica | Resultado |
+| :--- | :--- |
+| Unvoiced frames as voiced | 5/113 (4.42 %) |
+| Voiced frames as unvoiced | 4/87 (4.60 %) |
+| Gross voiced errors (+20.00 %) | 0/83 (0.00 %) |
+| MSE of fine errors | 2.54 % |
+| **TOTAL SCORE** | **93.00 %** |
+
+### Parámetros finales utilizados:
+* **Potencia (`-p`):** -52 dB
+* **Correlación (`-M`):** 0.6
+* **Ventana:** Hamming
+
+
 
 Ejercicios de ampliación
 ------------------------
