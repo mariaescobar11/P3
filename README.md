@@ -88,7 +88,7 @@ Ejercicios básicos
     y el *score* TOTAL proporcionados por `pitch_evaluate` en la evaluación de la base de datos 
 	`pitch_db/train`..
 
-Para maximizar la precisión del estimador de pitch, hemos ajustado los umbrales de decisión sonor/sord (unvoiced) a los valores óptimos de -52 dB para la potencia y 0.6 para las correlaciones (r1norm y rmaxnorm), además de implementar la ventana de Hamming.
+Para maximizar la precisión del estimador de pitch, hemos ajustado los umbrales de decisión sonor/sord (unvoiced) a los valores óptimos de -52 dB para la potencia y 0.6 para las correlaciones (Correlación al primer desplazamiento (r1norm) y máximo de la autocorrelación secundaria (rmaxnorm)), además de implementar la ventana de Hamming.
 
 Originalmente, el sistema solo evaluaba la periodicidad mediante la autocorrelación. Hemos mejorado esto añadiendo un umbral de potencia que actúa como filtro previo para eliminar el ruido de fondo. Al descartar los fragmentos con baja energía antes de analizar la autocorrelación, hemos conseguido eliminar prácticamente todos los falsos positivos en las zonas de silencio o ruido.
 
