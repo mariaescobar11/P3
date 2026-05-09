@@ -57,7 +57,7 @@ Ejercicios básicos
       return true;
     ```
     Implementación de la decisión sonoro/sordo (voiced/unvoiced):
-     * La señal se considera sonora (false) si la correlación de primer orden (r1norm) o la correlación en el máximo secundario (rmaxnorm) superan el umbral de 0.6. En caso contrario, se considera sorda (true).
+     La señal se considera sonora (false) si la correlación de primer orden (r1norm) o la correlación en el máximo secundario (rmaxnorm) superan el umbral de 0.6. En caso contrario, se considera sorda (true).
 
    * Puede serle útil seguir las instrucciones contenidas en el documento adjunto `código.pdf`.
 
