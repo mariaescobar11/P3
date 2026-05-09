@@ -129,6 +129,9 @@ Tabla con la tasa de error y el *score* TOTAL:
 * **Ventana:** Hamming
 
 
+Hemos conseguido reducir el Gross voiced errors al 0.00%, lo que indica que el estimador es muy robusto frente a errores de octava o capturas de armónicos no deseados. Este resultado se obtiene al implementar la ventana de Hamming, porque como suaviza los bordes de los frames, elimina las discontinuidades que suelen causar picos falsos en la autocorrelación. Esto garantiza que, siempre que el sistema detecta voz, la frecuencia fundamental calculada será fiable.
+
+
 
 Ejercicios de ampliación
 ------------------------
