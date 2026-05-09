@@ -55,11 +55,10 @@ namespace upc {
 					unsigned int sFreq,			///< Sampling rate in Hertzs
 					Window w=PitchAnalyzer::HAMMING,	///< Window type
 					float min_F0 = MIN_F0,		///< Pitch range should be restricted to be above this value
-					float max_F0 = MAX_F0,	///< Pitch range should be restricted to be below this value
+					float max_F0 = MAX_F0,		///< Pitch range should be restricted to be below this value
           float llindar_pot = 0,
           float llindar_r1norm = 0.6,
           float llindar_rmaxnorm = 0.6
-
 				 )
 	{
       frameLen = fLen;

@@ -11,23 +11,25 @@ namespace upc {
   void PitchAnalyzer::autocorrelation(const vector<float> &x, vector<float> &r) const {
 
     for (unsigned int l = 0; l < r.size(); ++l) {
-  		/// \TODO Compute the autocorrelation r[l]
-      /**  
-       \DONE Autocorrelación calculada
-      \f[
-      r[l] = \frac{1}{N} \sum_{n=l}^{n=N} x[n] \cdot x[n-l]
-      \f]
+    /// \TODO Compute the autocorrelation r[l]
+     /** 
+      \DONE Autocorrelación calculada
+     \f[
+     r[l] = \frac{1}{N} \sum_{n=l}^{n=N} x[n] \cdot x[n-l]
+     \f]
 
-      1. Inicialitzem \f$r[l]\f$ a zero
-      2. Acumulem el producte de \f$x[n]\f$ per \f$x[n-l]\f$ per a \f$n\f$ des de \f$l\f$ fins a \f$N-1\f$
-      3. Dividim \f$r[l]\f$ entre \f$N\f$.
-      */
 
-      r[l] = 0;
-      for (unsigned int n = l; n < x.size(); n++){
-        r[l] += x[n] * x[n-l];
+     1. Inicialitzem \f$r[l]\f$ a zero
+     2. Acumulem el producte de \f$x[n]\f$ per \f$x[n-l]\f$ per a \f$n\f$ des de \f$l\f$ fins a \f$N-1\f$
+     3. Dividim \f$r[l]\f$ entre \f$N\f$.
+     */
+
+      r[l]=0.0F;
+      for (unsigned int n=l; n<x.size();n++){
+        r[l] += x[n]*x[n-l];
       }
-      r[l] = r[l] / x.size();
+      r[l] = r[l]/x.size();
+      
     }
 
     if (r[0] == 0.0F) //to avoid log() and divide zero 
@@ -43,6 +45,7 @@ namespace upc {
     switch (win_type) {
     case HAMMING:
       /// \TODO Implement the Hamming window
+
       break;
     case RECT:
     default:
@@ -66,10 +69,11 @@ namespace upc {
     /// \TODO Implement a rule to decide whether the sound is voiced or not.
     /// * You can use the standard features (pot, r1norm, rmaxnorm),
     ///   or compute and use other ones.
-    if(r1norm < 0.6 || rmaxnorm > 0.6){
+
+    if (r1norm > 0.6 || rmaxnorm > 0.6){
       return false;
     }
-    return true;
+      return true;
   }
 
   float PitchAnalyzer::compute_pitch(vector<float> & x) const {
@@ -94,14 +98,14 @@ namespace upc {
 	///    - The lag corresponding to the maximum value of the pitch.
     ///	   .
 	/// In either case, the lag should not exceed that of the minimum value of the pitch.
-  ///for(iR = iRMax; iR < r.begin()+npitch_min && iR < r.end(); iR++) {
-for(iR = r.begin() + npitch_min; iR < r.begin()+npitch_max; iR++) {  
-  if(*iR > *iRMax){ 
-      iRMax=iR;
-      ///iRMax= r.begin() + npitch_min;
-      ///cout << iRMax - iR << '\t' << *iRMax << endl;
+
+  
+
+    for(iR= r.begin() + npitch_min; iR < r.begin() + npitch_max ; iR++){
+        if (*iR > *iRMax){
+           iRMax =iR;
+         }
     }
-  }
     
     unsigned int lag = iRMax - r.begin();
 

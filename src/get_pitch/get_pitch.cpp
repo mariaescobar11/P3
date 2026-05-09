@@ -31,7 +31,7 @@ Options:
 
     -h, --help  Show this screen
     --version   Show the version of the project
-
+    
 Arguments:
     input-wav   Wave file with the audio signal
     output-txt  Output file: ASCII file with the result of the estimation:
@@ -54,6 +54,8 @@ int main(int argc, const char *argv[]) {
   float llindar_r1norm = stof(args["--r1norm"].asString());
   float llindar_rmaxnorm = stof(args["--rmaxnorm"].asString());
 
+  
+  
   // Read input sound file
   unsigned int rate;
   vector<float> x;
