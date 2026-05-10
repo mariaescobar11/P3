@@ -177,7 +177,7 @@ Ejercicios de ampliación
     * Afegir el "$@" a scripts/run_get_pitch.sh, línia  13, dins de la comanda que crida get_pitch:
     ```cpp
       $GETF0 "$@" $fwav $ff0 > /dev/null 
-      ```
+    ```
     * Per què cal "$@"?
      "$@" representa tots els arguments extra que li passes al script (--zcr 0.25, etc.). Sense això, el script executa get_pitch ignorant-los, i sempre usa els valors per defecte.
  
