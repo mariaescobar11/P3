@@ -186,15 +186,15 @@ Ejercicios de ampliación
     Resultats després de fer run_get_pitch:
 
       ```cpp
-        ### Summary
-        Num. frames:    11200 = 7045 unvoiced + 4155 voiced
-        Unvoiced frames as voiced:      271/7045 (3.85 %)
-        Voiced frames as unvoiced:      459/4155 (11.05 %)
-        Gross voiced errors (+20.00 %): 81/3696 (2.19 %)
-        MSE of fine errors:     2.03 %
+          ### Summary
+          Num. frames:    11200 = 7045 unvoiced + 4155 voiced
+          Unvoiced frames as voiced:      271/7045 (3.85 %)
+          Voiced frames as unvoiced:      459/4155 (11.05 %)
+          Gross voiced errors (+20.00 %): 81/3696 (2.19 %)
+          MSE of fine errors:     2.03 %
 
-       ===>    TOTAL:  90.64 %
-        --------------------------
+         ===>    TOTAL:  90.64 %
+          --------------------------
       ```
 
     El seu efecte és petit perquè el pitch es mesura amb autocorrelació, i el ZCR només ajuda a la decisió sonor/sord (si el frame té pitch o no). Dona +0.3% de score, però per millorar l'estimació cal tenir en compte l'estimació directament.
