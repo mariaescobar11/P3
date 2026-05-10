@@ -185,7 +185,7 @@ Ejercicios de ampliación
 
     Resultats després de fer run_get_pitch:
 
-       ```cpp
+      ```cpp
         ### Summary
         Num. frames:    11200 = 7045 unvoiced + 4155 voiced
         Unvoiced frames as voiced:      271/7045 (3.85 %)
