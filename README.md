@@ -170,7 +170,7 @@ Ejercicios de ampliación
   por implementar el filtro de mediana, se valorará el análisis de los resultados obtenidos en función de
   la longitud del filtro.
 
-  #### Afegir ZCR com a nou paràmetre
+  ### Afegir ZCR com a nou paràmetre
     La primera millora probada ha estat afegir el parametre de zcr per poder evaluar millor si és tracta d'un so sonor o bé sord, ja que si la zcr és alta voldrà dir que es sord.
     Per tant s'ha modificat el programa per considerar un nou llindar anomenat llindar_zcr, tant al codi com al docopt, que se li ha atribuit un valor de 0.25 de default. A més a més cal tenir en compte que per poder evaluar diferents valors, s'ha hagut de : 
     
@@ -184,8 +184,7 @@ Ejercicios de ampliación
     * Així, quan fas ./run_get_pitch.sh --zcr 0.25, el --zcr 0.25 es passa  literalment a get_pitch abans dels fitxers d'entrada/sortida.
 
     Resultats després de fer run_get_pitch:
-
-      ```cpp
+    ```cpp
           ### Summary
           Num. frames:    11200 = 7045 unvoiced + 4155 voiced
           Unvoiced frames as voiced:      271/7045 (3.85 %)
@@ -195,7 +194,7 @@ Ejercicios de ampliación
 
          ===>    TOTAL:  90.64 %
           --------------------------
-      ```
+    ```
 
     El seu efecte és petit perquè el pitch es mesura amb autocorrelació, i el ZCR només ajuda a la decisió sonor/sord (si el frame té pitch o no). Dona +0.3% de score, però per millorar l'estimació cal tenir en compte l'estimació directament.
 
