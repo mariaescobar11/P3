@@ -133,7 +133,7 @@ Ejercicios básicos
 
 
 
-  Ejercicios de ampliación
+Ejercicios de ampliación
 ------------------------
 
 - Usando la librería `docopt_cpp`, modifique el fichero `get_pitch.cpp` para incorporar los parámetros del
@@ -170,7 +170,7 @@ Ejercicios básicos
   por implementar el filtro de mediana, se valorará el análisis de los resultados obtenidos en función de
   la longitud del filtro.
 
-  ## Afegir ZCR com a nou paràmetre
+  #### Afegir ZCR com a nou paràmetre
     La primera millora probada ha estat afegir el parametre de zcr per poder evaluar millor si és tracta d'un so sonor o bé sord, ja que si la zcr és alta voldrà dir que es sord.
     Per tant s'ha modificat el programa per considerar un nou llindar anomenat llindar_zcr, tant al codi com al docopt, que se li ha atribuit un valor de 0.25 de default. A més a més cal tenir en compte que per poder evaluar diferents valors, s'ha hagut de : 
     
