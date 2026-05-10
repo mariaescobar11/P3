@@ -123,9 +123,9 @@ Ejercicios básicos
   | **TOTAL SCORE** | **93.00 %** |
 
   ### Parámetros finales utilizados:
-  * **Umbral de potencia (`-p`):** -52 dB
-  * **Umbral de rmaxnorm (`-M`):** 0.6
-  * **Umbral de r1norm (`-1`):** 0.6
+  * **Umbral de potencia (`-p`):** -49 dB
+  * **Umbral de rmaxnorm (`-M`):** 0.36
+  * **Umbral de r1norm (`-1`):** 0.36
   * **Ventana:** Hamming
 
 
@@ -169,6 +169,37 @@ Ejercicios básicos
   También se valorará la realización de un estudio de los parámetros involucrados. Por ejemplo, si se opta
   por implementar el filtro de mediana, se valorará el análisis de los resultados obtenidos en función de
   la longitud del filtro.
+
+  *Afegir ZCR com a nou paràmetre*
+    La primera millora probada ha estat afegir el parametre de zcr per poder evaluar millor si és tracta d'un so sonor o bé sord, ja que si la zcr és alta voldrà dir que es sord.
+    Per tant s'ha modificat el programa per considerar un nou llindar anomenat llindar_zcr, tant al codi com al docopt, que se li ha atribuit un valor de 0.25 de default. A més a més cal tenir en compte que per poder evaluar diferents valors, s'ha hagut de : 
+    
+    * Afegir el "$@" a scripts/run_get_pitch.sh, línia  13, dins de la comanda que crida get_pitch:
+    ```cpp
+      $GETF0 "$@" $fwav $ff0 > /dev/null 
+      ```
+    * Per què cal "$@"?
+     "$@" representa tots els arguments extra que li passes al script (--zcr 0.25, etc.). Sense això, el script executa get_pitch ignorant-los, i sempre usa els valors per defecte.
+ 
+    * Així, quan fas ./run_get_pitch.sh --zcr 0.25, el --zcr 0.25 es passa  literalment a get_pitch abans dels fitxers d'entrada/sortida.
+
+    Resultats després de fer run_get_pitch:
+
+       ```cpp
+        ### Summary
+        Num. frames:    11200 = 7045 unvoiced + 4155 voiced
+        Unvoiced frames as voiced:      271/7045 (3.85 %)
+        Voiced frames as unvoiced:      459/4155 (11.05 %)
+        Gross voiced errors (+20.00 %): 81/3696 (2.19 %)
+        MSE of fine errors:     2.03 %
+
+       ===>    TOTAL:  90.64 %
+        --------------------------
+      ```
+
+    El seu efecte és petit perquè el pitch es mesura amb autocorrelació, i el ZCR només ajuda a la decisió sonor/sord (si el frame té pitch o no). Dona +0.3% de score, però per millorar l'estimació cal tenir en compte l'estimació directament.
+
+
    
 
 Evaluación *ciega* del estimador

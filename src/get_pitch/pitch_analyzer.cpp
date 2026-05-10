@@ -74,7 +74,7 @@ namespace upc {
       npitch_max = frameLen/2;
   }
 
-  bool PitchAnalyzer::unvoiced(float pot, float r1norm, float rmaxnorm) const {
+  bool PitchAnalyzer::unvoiced(float pot, float r1norm, float rmaxnorm, float zcr) const {
     /// \TODO Implement a rule to decide whether the sound is voiced or not.
     /// * You can use the standard features (pot, r1norm, rmaxnorm),
     ///   or compute and use other ones.
@@ -84,6 +84,9 @@ namespace upc {
      * La señal se considera sonora (false) si la correlación de primer orden (r1norm)
      * o la correlación en el máximo secundario (rmaxnorm) superan el umbral de 0.6.
      * En caso contrario, se considera sorda (true).
+     * Además la potencia i la zcr también se tiene en cuenta:
+     * Si la potencia es inferior al umbral es sordo.
+     * Si la tasa de cruce por cero es alta es sordo
      */
     
     /// Si la potencia es inferior al umbral es sordo
@@ -96,14 +99,13 @@ namespace upc {
     if (r1norm < llindar_r1norm || rmaxnorm < llindar_rmaxnorm) {
         return true;
     }
+  /// Si la tasa de cruce por cero es alta es sordo
+    if (zcr > llindar_zcr) {
+      return true;
+    }
 
     // En caso contrario, es sonoro (voiced)
     return false;
-
-    ///if (r1norm > 0.6 || rmaxnorm > 0.6){
-    ////  return false;
-   //// }
-     //// return true;
 
   }
 
@@ -145,16 +147,25 @@ namespace upc {
     unsigned int lag = iRMax - r.begin();
 
     float pot = 10 * log10(r[0]);
+    
+    // Calcular el numero de cruces por cero
+    float zcr = 0.0f;
+    for (unsigned int i = 1; i < x.size(); ++i) {
+        if (x[i] * x[i-1] < 0.0f) {
+            zcr += 1.0f;
+        }
+    }
+    zcr = zcr / x.size();
 
     //You can print these (and other) features, look at them using wavesurfer
     //Based on that, implement a rule for unvoiced
     //change to #if 1 and compile
 #if 0
     if (r[0] > 0.0F)
-      cout << pot << '\t' << r[1]/r[0] << '\t' << r[lag]/r[0] << endl;
+      cout << pot << '\t' << r[1]/r[0] << '\t' << r[lag]/r[0] << '\t' << zcr << endl;
 #endif
     
-    if (unvoiced(pot, r[1]/r[0], r[lag]/r[0]))
+    if (unvoiced(pot, r[1]/r[0], r[lag]/r[0], zcr))
       return 0;
     else
       return (float) samplingFreq/(float) lag;
