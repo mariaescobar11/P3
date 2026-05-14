@@ -88,48 +88,48 @@ Ejercicios básicos
     y el *score* TOTAL proporcionados por `pitch_evaluate` en la evaluación de la base de datos 
 	`pitch_db/train`..
 
-Para maximizar la precisión del estimador de pitch, hemos ajustado los umbrales de decisión sonor/sord (unvoiced) a los valores óptimos de -52 dB para la potencia y 0.6 para las correlaciones (Correlación al primer desplazamiento (r1norm) y máximo de la autocorrelación secundaria (rmaxnorm)), además de implementar la ventana de Hamming.
+  Para maximizar la precisión del estimador de pitch, hemos ajustado los umbrales de decisión sonor/sord (unvoiced) a los valores óptimos de -52 dB para la potencia y 0.6 para las correlaciones (Correlación al primer desplazamiento (r1norm) y máximo de la autocorrelación secundaria (rmaxnorm)), además de implementar la ventana de Hamming.
 
-Originalmente, el sistema solo evaluaba la periodicidad mediante la autocorrelación. Hemos mejorado esto añadiendo un umbral de potencia que actúa como filtro previo para eliminar el ruido de fondo. Al descartar los fragmentos con baja energía antes de analizar la autocorrelación, hemos conseguido eliminar prácticamente todos los falsos positivos en las zonas de silencio o ruido.
+  Originalmente, el sistema solo evaluaba la periodicidad mediante la autocorrelación. Hemos mejorado esto añadiendo un umbral de potencia que actúa como filtro previo para eliminar el ruido de fondo. Al descartar los fragmentos con baja energía antes de analizar la autocorrelación, hemos conseguido eliminar prácticamente todos los falsos positivos en las zonas de silencio o ruido.
 
-Además hemos cambiado la lógica cuando miramos la autocorrelación para detectar si es sordo o sonoro, ya que haciéndolo de la forma de antes (si el señal superaba el umbral se le asignaba como señal sonoro) era mucho más permisivo que haciéndolo al revés (si el señal no supera el umbral se asigna como sordo). 
+  Además hemos cambiado la lógica cuando miramos la autocorrelación para detectar si es sordo o sonoro, ya que haciéndolo de la forma de antes (si el señal superaba el umbral se le asignaba como señal sonoro) era mucho más permisivo que haciéndolo al revés (si el señal no supera el umbral se asigna como sordo). 
 
-Esta nueva forma es mucho más robusta porque, para que un frame sea detectado como sonoro, ahora debe cumplir todas las condiciones simultáneamente (energía suficiente y alta periodicidad en ambos parámetros).
+  Esta nueva forma es mucho más robusta porque, para que un frame sea detectado como sonoro, ahora debe cumplir todas las condiciones simultáneamente (energía suficiente y alta periodicidad en ambos parámetros).
 
-Con estos cambios hemos pasado de un 64% a un 93%.
+  Con estos cambios hemos pasado de un 64% a un 93%.
 
-Nueva regla de decisión:
+  Nueva regla de decisión:
 
-```cpp
-    if (pot < llindar_pot) {
-        return true; 
-    }
+  ```cpp
+      if (pot < llindar_pot) {
+          return true; 
+      }
 
-    if (r1norm < llindar_r1norm || rmaxnorm < llindar_rmaxnorm) {
-        return true;
-    }
-    return false;
-```
-
-
-Tabla con la tasa de error y el *score* TOTAL:
-
-| Métrica | Resultado |
-| :--- | :--- |
-| Unvoiced frames as voiced | 5/113 (4.42 %) |
-| Voiced frames as unvoiced | 4/87 (4.60 %) |
-| Gross voiced errors (+20.00 %) | 0/83 (0.00 %) |
-| MSE of fine errors | 2.54 % |
-| **TOTAL SCORE** | **93.00 %** |
-
-### Parámetros finales utilizados:
-* **Umbral de potencia (`-p`):** -52 dB
-* **Umbral de rmaxnorm (`-M`):** 0.6
-* **Umbral de r1norm (`-1`):** 0.6
-* **Ventana:** Hamming
+      if (r1norm < llindar_r1norm || rmaxnorm < llindar_rmaxnorm) {
+          return true;
+      }
+      return false;
+  ```
 
 
-Hemos conseguido reducir el Gross voiced errors al 0.00%, lo que indica que el estimador es muy robusto frente a errores de octava o capturas de armónicos no deseados. Este resultado se obtiene al implementar la ventana de Hamming, porque como suaviza los bordes de los frames, elimina las discontinuidades que suelen causar picos falsos en la autocorrelación. Esto garantiza que, siempre que el sistema detecta voz, la frecuencia fundamental calculada será fiable.
+  Tabla con la tasa de error y el *score* TOTAL:
+
+  | Métrica | Resultado |
+  | :--- | :--- |
+  | Unvoiced frames as voiced | 5/113 (4.42 %) |
+  | Voiced frames as unvoiced | 4/87 (4.60 %) |
+  | Gross voiced errors (+20.00 %) | 0/83 (0.00 %) |
+  | MSE of fine errors | 2.54 % |
+  | **TOTAL SCORE** | **93.00 %** |
+
+  ### Parámetros finales utilizados:
+  * **Umbral de potencia (`-p`):** -49 dB
+  * **Umbral de rmaxnorm (`-M`):** 0.36
+  * **Umbral de r1norm (`-1`):** 0.36
+  * **Ventana:** Hamming
+
+
+  Hemos conseguido reducir el Gross voiced errors al 0.00%, lo que indica que el estimador es muy robusto frente a errores de octava o capturas de armónicos no deseados. Este resultado se obtiene al implementar la ventana de Hamming, porque como suaviza los bordes de los frames, elimina las discontinuidades que suelen causar picos falsos en la autocorrelación. Esto garantiza que, siempre que el sistema detecta voz, la frecuencia fundamental calculada será fiable.
 
 
 
@@ -169,6 +169,36 @@ Ejercicios de ampliación
   También se valorará la realización de un estudio de los parámetros involucrados. Por ejemplo, si se opta
   por implementar el filtro de mediana, se valorará el análisis de los resultados obtenidos en función de
   la longitud del filtro.
+
+  ### Afegir ZCR com a nou paràmetre
+    La primera millora probada ha estat afegir el parametre de zcr per poder evaluar millor si és tracta d'un so sonor o bé sord, ja que si la zcr és alta voldrà dir que es sord.
+    Per tant s'ha modificat el programa per considerar un nou llindar anomenat llindar_zcr, tant al codi com al docopt, que se li ha atribuit un valor de 0.25 de default. A més a més cal tenir en compte que per poder evaluar diferents valors, s'ha hagut de : 
+    
+    * Afegir el "$@" a scripts/run_get_pitch.sh, línia  13, dins de la comanda que crida get_pitch:
+    ```cpp
+      $GETF0 "$@" $fwav $ff0 > /dev/null 
+    ```
+    * Per què cal "$@"?
+     "$@" representa tots els arguments extra que li passes al script (--zcr 0.25, etc.). Sense això, el script executa get_pitch ignorant-los, i sempre usa els valors per defecte.
+ 
+    * Així, quan fas ./run_get_pitch.sh --zcr 0.25, el --zcr 0.25 es passa  literalment a get_pitch abans dels fitxers d'entrada/sortida.
+
+    Resultats després de fer run_get_pitch:
+    ```cpp
+          ### Summary
+          Num. frames:    11200 = 7045 unvoiced + 4155 voiced
+          Unvoiced frames as voiced:      271/7045 (3.85 %)
+          Voiced frames as unvoiced:      459/4155 (11.05 %)
+          Gross voiced errors (+20.00 %): 81/3696 (2.19 %)
+          MSE of fine errors:     2.03 %
+
+         ===>    TOTAL:  90.64 %
+          --------------------------
+    ```
+
+    El seu efecte és petit perquè el pitch es mesura amb autocorrelació, i el ZCR només ajuda a la decisió sonor/sord (si el frame té pitch o no). Dona +0.3% de score, però per millorar l'estimació cal tenir en compte l'estimació directament.
+
+
    
 
 Evaluación *ciega* del estimador

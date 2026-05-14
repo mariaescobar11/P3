@@ -33,6 +33,7 @@ namespace upc {
     float llindar_pot; ///< llindar de potencia
     float llindar_r1norm;///< llindar de correlacio de 1
     float llindar_rmaxnorm;///< llindar de correlació al max fora de l'origen
+    float llindar_zcr;///< llindar de taxa de creuament per zero
  
 	///
 	/// Computes correlation from lag=0 to r.size()
@@ -47,7 +48,7 @@ namespace upc {
 	///
 	/// Returns true is the frame is unvoiced
 	///
-    bool unvoiced(float pot, float r1norm, float rmaxnorm) const;
+    bool unvoiced(float pot, float r1norm, float rmaxnorm, float zcr) const;
 
 
   public:
@@ -56,9 +57,10 @@ namespace upc {
 					Window w=PitchAnalyzer::HAMMING,	///< Window type
 					float min_F0 = MIN_F0,		///< Pitch range should be restricted to be above this value
 					float max_F0 = MAX_F0,		///< Pitch range should be restricted to be below this value
-          float llindar_pot = 0,
-          float llindar_r1norm = 0.6,
-          float llindar_rmaxnorm = 0.6
+          float llindar_pot = -49,
+          float llindar_r1norm = 0.38,
+          float llindar_rmaxnorm = 0.38,
+          float llindar_zcr = 0.25
 				 )
 	{
       frameLen = fLen;
@@ -68,6 +70,8 @@ namespace upc {
       this->llindar_pot = llindar_pot;
       this->llindar_r1norm = llindar_r1norm;
       this->llindar_rmaxnorm = llindar_rmaxnorm;
+      this->llindar_zcr = llindar_zcr;
+
     }
 
 	///
