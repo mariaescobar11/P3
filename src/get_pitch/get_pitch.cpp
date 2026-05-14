@@ -25,9 +25,9 @@ Usage:
     get_pitch --version
 
 Options:
-    -p, --pot FLOAT       llindar de potència per la decisió sonor/sord [Default: -52]
-    -1, --r1norm FLOAT    llindar de correlació de 1 per la decisió sonor/sord [Default: 0.6]
-    -M, --rmaxnorm FLOAT  llindar de correlació al max secundari per la decisió sonor/sord [Default: 0.6]
+    -p, --pot FLOAT       llindar de potència per la decisió sonor/sord [Default: -49]
+    -1, --r1norm FLOAT    llindar de correlació de 1 per la decisió sonor/sord [Default: 0.38]
+    -M, --rmaxnorm FLOAT  llindar de correlació al max secundari per la decisió sonor/sord [Default: 0.38]
 
     -h, --help  Show this screen
     --version   Show the version of the project
