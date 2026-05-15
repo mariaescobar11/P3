@@ -127,10 +127,10 @@ Ejercicios básicos
       | **TOTAL SCORE** | **90.50 %** |
 
       ### Parámetros finales utilizados:
-        * **Umbral de potencia (`-p`):** -49 dB
-        * **Umbral de rmaxnorm (`-M`):** 0.36
-        * **Umbral de r1norm (`-1`):** 0.36
-        * **Ventana:** Hamming
+        * Umbral de potencia (`-p`):** -49 dB
+        * Umbral de rmaxnorm (`-M`):** 0.36
+        * Umbral de r1norm (`-1`):** 0.36
+        * Ventana:** Hamming
 
 
       El porcentaje de Gross Errors es bastante bajo (2.21%) y el del MSE también (2.05%). Esto demuestran que el algoritmo es muy preciso y fiable cuando detecta la presencia de voz. Los errores de octava son mínimos. El error principal está en los Voiced frames as unvoiced (10.64%). Esto indica que el sistema tiende a ser conservador y etiqueta como sordos (f0=0) algunos segmentos que contienen voz, probablemente en zonas de baja energía o transiciones.
@@ -357,6 +357,7 @@ Ejercicios de ampliación
     * Calcular rmaxnorm = c[lag] / c[0] i r1norm = c[1] / c[0].
     * Aplicar la regla de decisió sonor/sord amb els llindars corresponents tenint en compte el nou pitch calculat (lag).
 
+
     ```cpp
         // Si hem usat el cepstrum, el pic d'autocorrelació pot estar lleugerament desplaçat.
         // Busquem el màxim local de l'autocorrelació al voltant del lag trobat.
@@ -419,13 +420,13 @@ Ejercicios de ampliación
 
 Un cop finalitzat el procés d'optimització i integració de les diferents tècniques, es poden extreure les següents conclusions sobre el desenvolupament del detector de pitch:
 
-1. **Impacte de la Robustesa:** L'assoliment del **91.63%** d'èxit és el resultat directe de combinar anàlisi temporal (autocorrelació) i espectral (**Cepstrum**). Mentre que el Cepstrum per si sol presentava una taxa de trames sonores perdudes elevada (16.08%), la seva integració com a guia per a l'autocorrelació ha permès refinar la detecció de silenci, baixant el soroll confós amb veu (*Unvoiced as voiced*) a un mínim del **4.05%**.
+1. **Impacte de la Robustesa:** L'assoliment del 91.63% d'èxit és el resultat directe de combinar anàlisi temporal (autocorrelació) i espectral (Cepstrum). Mentre que el Cepstrum per si sol presentava una taxa de trames sonores perdudes elevada (16.08%), la seva integració com a guia per a l'autocorrelació ha permès refinar la detecció de silenci, baixant el soroll confós amb veu (*Unvoiced as voiced*) a un mínim del 4.05%.
 
-2. **Sinergia entre Pre i Post-processat:** S'ha demostrat que el tractament de la senyal és tan important com l'algorisme d'estimació. El **filtre de mitjana mòbil** ha estat el factor clau per "salvar" trames de veu de baixa energia (reduint el *Voiced as unvoiced* significativament), mentre que el **filtre de mediana** ha garantit la continuïtat melòdica eliminant els *spikes* o errors d'octava aïllats.
+2. **Sinergia entre Pre i Post-processat:** S'ha demostrat que el tractament de la senyal és tan important com l'algorisme d'estimació. El filtre de mitjana mòbil ha estat el factor clau per "salvar" trames de veu de baixa energia (reduint el *Voiced as unvoiced* significativament), mentre que el filtre de mediana ha garantit la continuïtat melòdica eliminant els *spikes* o errors d'octava aïllats.
 
-3. **Importància de l'Ajust de Paràmetres (Grid Search):** L'ús dels scripts d'optimització ha permès trobar un punt d'equilibri crític. L'ajust del llindar de **ZCR a 0.10** i la **potència a -50 dB** ha permès que el sistema sigui prou sensible per detectar veu feble però prou selectiu per no disparar-se amb el soroll de fons.
+3. **Importància de l'Ajust de Paràmetres (Grid Search):** L'ús dels scripts d'optimització ha permès trobar un punt d'equilibri crític. L'ajust del llindar de ZCR a 0.10 i la potència a -50 dB ha permès que el sistema sigui prou sensible per detectar veu feble però prou selectiu per no disparar-se amb el soroll de fons.
 
-4. **Compromís Precisió-Robustesa:** S'observa que, a mesura que el sistema es torna més robust contra errors grossos, el **MSE** (error fi) tendeix a estabilitzar-se al voltant del 2.7%. Això és un compromís acceptable.
+4. **Compromís Precisió-Robustesa:** S'observa que, a mesura que el sistema es torna més robust contra errors grossos, el MSE (error fi) tendeix a estabilitzar-se al voltant del 2.7%. Això és un compromís acceptable.
 
 En resum, la versió final del sistema representa un detector de pitch d'alta fiabilitat, que combina el millor dels dominis temporal i freqüencial per oferir una resposta estable i precisa davant de locucions diverses.
 
