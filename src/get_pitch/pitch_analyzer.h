@@ -62,11 +62,11 @@ namespace upc {
 					Window w=PitchAnalyzer::HAMMING,	///< Window type
 					float min_F0 = MIN_F0,		///< Pitch range should be restricted to be above this value
 					float max_F0 = MAX_F0,		///< Pitch range should be restricted to be below this value
-          float llindar_pot = -49, //-52
-          float llindar_r1norm = 0.38, //0.3
-          float llindar_rmaxnorm = 0.38, //0.3
-          float llindar_zcr = 0.25, //0.1
-          bool activar_ceps = false
+          float llindar_pot = -52, ///< llindar de potencia per la decisió sonor/sord
+          float llindar_r1norm = 0.23, ///<llindar de correlació de 1 per la decisió sonor/sord
+          float llindar_rmaxnorm = 0.27, /// <llindar de correlació al max secundari per la decisió sonor/sord
+          float llindar_zcr = 0.1, /// <llindar de taxa de zero cross rate per la decisió sonor/sord
+          bool activar_ceps = true ///< activar el càlcul del Cepstrum per trobar el pitch
 				 )
 	{
       frameLen = fLen;

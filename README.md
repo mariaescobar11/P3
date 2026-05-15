@@ -226,7 +226,7 @@ Ejercicios de ampliación
             c[i] = buf[i];
         }
     ```
-    **B)Càlcul del pic del cesptrum o l'autocorrelació**
+    **B) Càlcul del pic del cesptrum o l'autocorrelació**
 
     Per estimar el segon pic del cepstrum o l'autocorrelació hem fet us del codi mencionat abaix, a més a més s'ha de tenir en conta que s'ha fet la funció perqué depenent de si l'activar_ceps està activa calculi el pitch a partir de la funció del cepstrum i en cas de que no ho estigui faci us de l'autocorrelació directament: 
 
@@ -236,8 +236,7 @@ Ejercicios de ampliación
       for(iR= iRMax = iter + npitch_min ; iR < iter + npitch_max ; iR++){
             if (*iR > *iRMax){
               iRMax =iR;
-          }
-        }
+          } }
       
       unsigned int lag = iRMax - iter; 
     ```
@@ -261,10 +260,7 @@ Ejercicios de ampliación
                 if (current_lag >= 0 && current_lag < (int)r.size()) {
                     if (r[current_lag] > r_max_val) {
                         r_max_val = r[current_lag];
-                    }
-                }
-            }
-        }
+                    } } } }
     ```   
   
   **Resultats després de fer run_get_pitch -c:**
@@ -313,7 +309,9 @@ Ejercicios de ampliación
   ### Optimitzant paràmetres i usant Postprocessat, Preprocessat i Cepstrum
     Després de provar diferents combinacions de paràmetres i tècniques, hem arribat a la següent configuració final, que ens ha proporcionat un score del 90.50%:
   
-    -z 0.10 --pot=-52 -1 0.23 -M 0.27 amb un encert de 91.29%
+    ```cpp
+    run_get_pitch -c -z 0.10 --pot=-52 -1 0.23 -M 0.27 
+    ```
 
     * **Umbral de potencia (`-p`):** -52 dB
     * **Umbral de rmaxnorm (`-M`):** 0.27
@@ -321,7 +319,8 @@ Ejercicios de ampliación
     * **Ventana:** Hamming
     * **Umbral de zcr (`-z`):** 0.10
     * **Activar cepstrum (`-c`):** true
-      Tabla con la tasa de error y el *score* TOTAL:
+    
+    Tabla con la tasa de error y el *score* TOTAL:
 
     **Num. frames:    11200 = 7045 unvoiced + 4155 voiced**
 
@@ -331,7 +330,7 @@ Ejercicios de ampliación
     | Voiced frames as unvoiced | 382/4155 (9.19 %) |
     | Gross voiced errors (+20.00 %) | 31/3773 (0.82 %) |
     | MSE of fine errors | 2.94 % |
-    | **TOTAL SCORE** | **91.29 % %** |
+    | **TOTAL SCORE** | **91.29 %** |
 
      Aquesta configuració ha estat obtinguda després d'un procés iteratiu d'ajust dels paràmetres i l'addició de tècniques de preprocesat (ventana de Hamming) i postprocesat (filtro de mediana). 
 
