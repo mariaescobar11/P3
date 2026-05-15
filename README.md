@@ -64,26 +64,20 @@ Ejercicios básicos
 - Una vez completados los puntos anteriores, dispondrá de una primera versión del estimador de pitch. El 
   resto del trabajo consiste, básicamente, en obtener las mejores prestaciones posibles con él.
 
-  * Utilice el programa `wavesurfer` para analizar las condiciones apropiadas para determinar si un
-    segmento es sonoro o sordo. 
+  * Utilice el programa `wavesurfer` para analizar las condiciones apropiadas para determinar si un segmento es sonoro o sordo. 
 	
-	  - Inserte una gráfica con la estimación de pitch incorporada a `wavesurfer` y, junto a ella, los 
-	    principales candidatos para determinar la sonoridad de la voz: el nivel de potencia de la señal
-		(r[0]), la autocorrelación normalizada de uno (r1norm = r[1] / r[0]) y el valor de la
-		autocorrelación en su máximo secundario (rmaxnorm = r[lag] / r[0]).
+	  - Inserte una gráfica con la estimación de pitch incorporada a `wavesurfer` y, junto a ella, los principales candidatos para determinar la sonoridad de la voz: el nivel de potencia de la señal (r[0]), la autocorrelación normalizada de uno (r1norm = r[1] / r[0]) y el valor de la autocorrelación en su máximo secundario (rmaxnorm = r[lag] / r[0]).
 
 		Puede considerar, también, la conveniencia de usar la tasa de cruces por cero.
 
-	    Recuerde configurar los paneles de datos para que el desplazamiento de ventana sea el adecuado, que
-		en esta práctica es de 15 ms.
+	    Recuerde configurar los paneles de datos para que el desplazamiento de ventana sea el adecuado, que	en esta práctica es de 15 ms.
 
-      - Use el estimador de pitch implementado en el programa `wavesurfer` en una señal de prueba y compare
-	    su resultado con el obtenido por la mejor versión de su propio sistema.  Inserte una gráfica
-		ilustrativa del resultado de ambos estimadores.
+      - Use el estimador de pitch implementado en el programa `wavesurfer` en una señal de prueba y compare su resultado con el obtenido por la mejor versión de su propio sistema.  Inserte una gráfica ilustrativa del resultado de ambos estimadores.
      
-		Aunque puede usar el propio Wavesurfer para obtener la representación, se valorará
-	 	el uso de alternativas de mayor calidad (particularmente Python).
+		Aunque puede usar el propio Wavesurfer para obtener la representación, se valorará el uso de alternativas de mayor calidad (particularmente Python).
   
+    ![Captura del Docopt](img/grafica_completa_sonoritat.png)
+
   * Optimice los parámetros de su sistema de estimación de pitch e inserte una tabla con las tasas de error
     y el *score* TOTAL proporcionados por `pitch_evaluate` en la evaluación de la base de datos 
 	`pitch_db/train`..
@@ -204,7 +198,7 @@ Ejercicios de ampliación
     El seu efecte és petit perquè el pitch es mesura amb autocorrelació, i el ZCR només ajuda a la decisió sonor/sord (si el frame té pitch o no). Dona +0.3% de score, però per millorar l'estimació cal tenir en compte l'estimació directament.
 
   ### Docopt
-    ![Captura del Docopt](image.png)
+    ![Captura del Docopt](img/docopt.png)
 
     L'exemple d'us és el següent, on s'ha activat el cepstrum i s'han ajustat els llindars de zcr, potència i correlació per veure com afecta al score total:
 
@@ -226,7 +220,9 @@ Ejercicios de ampliación
      -  |X| = sqrt(real^2 + imag^2)
      -  log(|X| + epsilon)
      -  IFFT del log-espectre
-     -  c[n] = part real de la IFFT    
+     -  c[n] = part real de la IFFT 
+     
+        
 
     ```cpp
        void PitchAnalyzer::cepstrum(const vector<float> &x, vector<float> &c) const {
