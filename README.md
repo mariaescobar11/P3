@@ -179,6 +179,7 @@ Ejercicios de ampliación
 
 
     **A) Càlcul dels indexs del cepstrum**
+
       Per fer-ho, hem fet la funció cepstrum, la qual ha fet us de la llibreria FFT de Fastest Fourier Transform in the West (FFTW) per calcular la FFT i la IFFT. Aquesta funció segueix els passos següents:
        1. Zero Padding (cal fer-la amb mida potència de 2, tipus 2^ceil(log2(N)))
        2. |X| = sqrt(real^2 + imag^2)
@@ -226,6 +227,7 @@ Ejercicios de ampliación
         }
     ```
     **B)Càlcul del pic del cesptrum o l'autocorrelació**
+
       Per estimar el segon pic del cepstrum o l'autocorrelació hem fet us del codi mencionat abaix, a més a més s'ha de tenir en conta que s'ha fet la funció perqué depenent de si l'activar_ceps està activa calculi el pitch a partir de la funció del cepstrum i en cas de que no ho estigui faci us de l'autocorrelació directament: 
 
     ```cpp
@@ -241,6 +243,7 @@ Ejercicios de ampliación
     ```
 
     **C) Càlcul del pitch desde el segon pic secundari**
+    
       Hem fet us de la funció de cepstrum per trobar el pitch, seguint els següents passos:
        1. Calcular el cepstrum del frame amb la funció cepstrum mencionada en l'apartat A)
        2. Localitzar el màxim secundari del cepstrum entre les posicions corresponents a 50 Hz i 500 Hz(lag entre 160 i 320)
