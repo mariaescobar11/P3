@@ -126,7 +126,7 @@ Ejercicios básicos
       | MSE of fine errors | 2.05 % |
       | **TOTAL SCORE** | **90.50 %** |
 
-        ### Parámetros finales utilizados:
+      ### Parámetros finales utilizados:
         * **Umbral de potencia (`-p`):** -49 dB
         * **Umbral de rmaxnorm (`-M`):** 0.36
         * **Umbral de r1norm (`-1`):** 0.36
