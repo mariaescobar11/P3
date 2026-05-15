@@ -154,10 +154,8 @@ Ejercicios de ampliación
 
   * Técnicas de preprocesado: filtrado paso bajo, diezmado, *center clipping*, etc.
   * Técnicas de postprocesado: filtro de mediana, *dynamic time warping*, etc.
-  * Métodos alternativos a la autocorrelación: procesado cepstral, *average magnitude difference function*
-    (AMDF), etc.
-  * Optimización **demostrable** de los parámetros que gobiernan el estimador, en concreto, de los que
-    gobiernan la decisión sonoro/sordo.
+  * Métodos alternativos a la autocorrelación: procesado cepstral, *average magnitude difference function* (AMDF), etc.
+  * Optimización **demostrable** de los parámetros que gobiernan el estimador, en concreto, de los que gobiernan la decisión sonoro/sordo.
   * Cualquier otra técnica que se le pueda ocurrir o encuentre en la literatura.
 
   Encontrará más información acerca de estas técnicas en las [Transparencias del Curso](https://atenea.upc.edu/pluginfile.php/2908770/mod_resource/content/3/2b_PS%20Techniques.pdf)
@@ -171,6 +169,39 @@ Ejercicios de ampliación
   por implementar el filtro de mediana, se valorará el análisis de los resultados obtenidos en función de
   la longitud del filtro.
 
+  ## MEJORAS IMPLEMENTADAS
+   Les millores mencionades a continuació han estat implementades de forma iterativa, és a dir, s'han anat afegint una a una i comprovant el seu efecte sobre el score total.
+
+  ### Afegir ZCR com a nou paràmetre
+    La primera millora probada ha estat afegir el parametre de zcr per poder evaluar millor si és tracta d'un so sonor o bé sord, ja que si la zcr és alta voldrà dir que es sord.
+    
+    Per tant s'ha modificat el programa per considerar un nou llindar anomenat llindar_zcr, tant al codi com al docopt, que se li ha atribuit un valor de 0.25 de default. A més a més cal tenir en compte que per poder evaluar diferents valors, s'ha hagut de : 
+    
+    * Afegir el "$@" a scripts/run_get_pitch.sh, línia  13, dins de la comanda que crida get_pitch:
+    ```cpp
+      $GETF0 "$@" $fwav $ff0 > /dev/null 
+    ```
+    * Per què cal "$@"?
+     "$@" representa tots els arguments extra que li passes al script (--zcr 0.25, etc.). Sense això, el script executa get_pitch ignorant-los, i sempre usa els valors per defecte.
+ 
+    * Així, quan fas ./run_get_pitch.sh --zcr 0.25, el --zcr 0.25 es passa  literalment a get_pitch abans dels fitxers d'entrada/sortida.
+
+    Resultats després de fer run_get_pitch:
+    ```cpp
+          ### Summary
+          Num. frames:    11200 = 7045 unvoiced + 4155 voiced
+          Unvoiced frames as voiced:      271/7045 (3.85 %)
+          Voiced frames as unvoiced:      459/4155 (11.05 %)
+          Gross voiced errors (+20.00 %): 81/3696 (2.19 %)
+          MSE of fine errors:     2.03 %
+
+         ===>    TOTAL:  90.64 %
+          --------------------------
+    ```
+
+    El seu efecte és petit perquè el pitch es mesura amb autocorrelació, i el ZCR només ajuda a la decisió sonor/sord (si el frame té pitch o no). Dona +0.3% de score, però per millorar l'estimació cal tenir en compte l'estimació directament.
+
+
   ### Cepstrum i Autocorrelació
     Hem usat el cepstrum per determinar sobre quinens mostres estaria el nostre pithc i d'alla calculem l'autocorrelació al voltnat d'aquelles mostres per tenir una cerca del pitch computacionalment més bona atés que calcular l'autocorrelació és més car, per tant quan menys mostres usem millor.
 
@@ -181,11 +212,11 @@ Ejercicios de ampliación
     **A) Càlcul dels indexs del cepstrum**
 
     Per fer-ho, hem fet la funció cepstrum, la qual ha fet us de la llibreria FFT de Fastest Fourier Transform in the West (FFTW) per calcular la FFT i la IFFT. Aquesta funció segueix els passos següents:
-     -  1. Zero Padding (cal fer-la amb mida potència de 2, tipus 2^ceil(log2(N)))
-     -  2. |X| = sqrt(real^2 + imag^2)
-     -  3. log(|X| + epsilon)
-     -  4. IFFT del log-espectre
-     -  5. c[n] = part real de la IFFT    
+     -  Zero Padding (cal fer-la amb mida potència de 2, tipus 2^ceil(log2(N)))
+     -  |X| = sqrt(real^2 + imag^2)
+     -  log(|X| + epsilon)
+     -  IFFT del log-espectre
+     -  c[n] = part real de la IFFT    
 
     ```cpp
        void PitchAnalyzer::cepstrum(const vector<float> &x, vector<float> &c) const {
@@ -244,10 +275,10 @@ Ejercicios de ampliación
     **C) Càlcul del pitch desde el segon pic secundari**
 
     Hem fet us de la funció de cepstrum per trobar el pitch, seguint els següents passos:
-      - 1. Calcular el cepstrum del frame amb la funció cepstrum mencionada en l'apartat A)
-      - 2. Localitzar el màxim secundari del cepstrum entre les posicions corresponents a 50 Hz i 500 Hz(lag entre 160 i 320)
-      - 3. Calcular rmaxnorm = c[lag] / c[0] i r1norm = c[1] / c[0]
-      - 4. Aplicar la regla de decisió sonor/sord amb els llindars corresponents tenint en compte el nou pitch calculat lag:
+      - Calcular el cepstrum del frame amb la funció cepstrum mencionada en l'apartat A)
+      - Localitzar el màxim secundari del cepstrum entre les posicions corresponents a 50 Hz i 500 Hz(lag entre 160 i 320)
+      - Calcular rmaxnorm = c[lag] / c[0] i r1norm = c[1] / c[0]
+      - Aplicar la regla de decisió sonor/sord amb els llindars corresponents tenint en compte el nou pitch calculat lag:
 
     ```cpp
         // Si hem usat el cepstrum, el pic d'autocorrelació pot estar lleugerament desplaçat.
@@ -277,38 +308,12 @@ Ejercicios de ampliación
   ```
     El resultat ha empitjorat envers al que teniem. 
 
-  ### Afegir ZCR com a nou paràmetre
-    La primera millora probada ha estat afegir el parametre de zcr per poder evaluar millor si és tracta d'un so sonor o bé sord, ja que si la zcr és alta voldrà dir que es sord.
-    
-    Per tant s'ha modificat el programa per considerar un nou llindar anomenat llindar_zcr, tant al codi com al docopt, que se li ha atribuit un valor de 0.25 de default. A més a més cal tenir en compte que per poder evaluar diferents valors, s'ha hagut de : 
-    
-    * Afegir el "$@" a scripts/run_get_pitch.sh, línia  13, dins de la comanda que crida get_pitch:
-    ```cpp
-      $GETF0 "$@" $fwav $ff0 > /dev/null 
-    ```
-    * Per què cal "$@"?
-     "$@" representa tots els arguments extra que li passes al script (--zcr 0.25, etc.). Sense això, el script executa get_pitch ignorant-los, i sempre usa els valors per defecte.
  
-    * Així, quan fas ./run_get_pitch.sh --zcr 0.25, el --zcr 0.25 es passa  literalment a get_pitch abans dels fitxers d'entrada/sortida.
-
-    Resultats després de fer run_get_pitch:
-    ```cpp
-          ### Summary
-          Num. frames:    11200 = 7045 unvoiced + 4155 voiced
-          Unvoiced frames as voiced:      271/7045 (3.85 %)
-          Voiced frames as unvoiced:      459/4155 (11.05 %)
-          Gross voiced errors (+20.00 %): 81/3696 (2.19 %)
-          MSE of fine errors:     2.03 %
-
-         ===>    TOTAL:  90.64 %
-          --------------------------
-    ```
-
-    El seu efecte és petit perquè el pitch es mesura amb autocorrelació, i el ZCR només ajuda a la decisió sonor/sord (si el frame té pitch o no). Dona +0.3% de score, però per millorar l'estimació cal tenir en compte l'estimació directament.
-
-  ### Optimitzant paràmetres i usant Postprocessat, Preprocessat i Cepstrum
+  ### Optimització de paràmetres 
     Després de provar diferents combinacions de paràmetres i tècniques, hem arribat a la següent configuració final, que ens ha proporcionat un score del 91.29%:
-  
+    Hem fet us dels scripts : **grid_search.sh** i **grid_search_fine.sh** per provar diferents combinacions de paràmetres i trobar la millor configuració. 
+
+    Com a resultat d'aquest procés, hem obtingut la següent configuració final:
     ```cpp
     run_get_pitch -c -z 0.10 --pot=-52 -1 0.23 -M 0.27 
     ```
@@ -332,9 +337,9 @@ Ejercicios de ampliación
     | MSE of fine errors | 2.94 % |
     | **TOTAL SCORE** | **91.29 %** |
 
-     Aquesta configuració ha estat obtinguda després d'un procés iteratiu d'ajust dels paràmetres i l'addició de tècniques de preprocesat (ventana de Hamming) i postprocesat (filtro de mediana). 
+     Aquesta configuració ha estat obtinguda després d'un procés iteratiu d'ajust dels paràmetres i l'addició de tècniques de preprocesat (filtre pas-baix) i postprocesat (filtro de mediana). 
 
-     El preprocesat amb la ventana de Hamming ajuda a reduir les discontinuïtats al principi i al final del frame, millorant la qualitat de l'estimació del pitch. El postprocesat amb un filtro de mediana ajuda a suavitzar les estimacions i eliminar los outliers, reduciendo los errores grossos.
+     El preprocesat amb filtre pas baix ajuda a reduir les discontinuïtats al principi i al final del frame, millorant la qualitat de l'estimació del pitch. El postprocesat amb un filtro de mediana ajuda a suavitzar les estimacions i eliminar los outliers, reduciendo los errores grossos.
 
 
 
