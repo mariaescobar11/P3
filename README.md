@@ -36,6 +36,8 @@ Ejercicios básicos
    * Determine el mejor candidato para el periodo de pitch localizando el primer máximo secundario de la
      autocorrelación. Inserte a continuación el código correspondiente.
 
+    El mejor candidato para el periodo de pitch es la variable lag, que se calcula de la siquiente manera:
+
     ```cpp
     for(iR= r.begin() + npitch_min; iR < r.begin() + npitch_max ; iR++){
         if (*iR > *iRMax){
@@ -127,10 +129,10 @@ Ejercicios básicos
       | **TOTAL SCORE** | **90.50 %** |
 
       ### Parámetros finales utilizados:
-       * Umbral de potencia (`-p`):** -49 dB
-       * Umbral de rmaxnorm (`-M`):** 0.36
-       * Umbral de r1norm (`-1`):** 0.36
-       * Ventana:** Hamming
+       * **Umbral de potencia (`-p`):** -49 dB
+       * **Umbral de rmaxnorm (`-M`):** 0.36
+       * **Umbral de r1norm (`-1`):** 0.36
+       * **Ventana:** Hamming
 
 
       El porcentaje de Gross Errors es bastante bajo (2.21%) y el del MSE también (2.05%). Esto demuestran que el algoritmo es muy preciso y fiable cuando detecta la presencia de voz. Los errores de octava son mínimos. El error principal está en los Voiced frames as unvoiced (10.64%). Esto indica que el sistema tiende a ser conservador y etiqueta como sordos (f0=0) algunos segmentos que contienen voz, probablemente en zonas de baja energía o transiciones.
@@ -190,16 +192,16 @@ Ejercicios de ampliación
 
     Resultats després de fer run_get_pitch:
     ```cpp
-          ### Summary
-          Num. frames:    11200 = 7045 unvoiced + 4155 voiced
-          Unvoiced frames as voiced:      271/7045 (3.85 %)
-          Voiced frames as unvoiced:      459/4155 (11.05 %)
-          Gross voiced errors (+20.00 %): 81/3696 (2.19 %)
-          MSE of fine errors:     2.03 %
+      ### Summary
+      Num. frames:    11200 = 7045 unvoiced + 4155 voiced
+      Unvoiced frames as voiced:      271/7045 (3.85 %)
+      Voiced frames as unvoiced:      459/4155 (11.05 %)
+      Gross voiced errors (+20.00 %): 81/3487 (2.19 %)
+      MSE of fine errors:     2.03 %
 
-         ===>    TOTAL:  90.64 %
-          --------------------------
-    ```
+      ===>    TOTAL:  90.64 %
+      --------------------------
+  ```
 
     El seu efecte és petit perquè el pitch es mesura amb autocorrelació, i el ZCR només ajuda a la decisió sonor/sord (si el frame té pitch o no). Dona +0.3% de score, però per millorar l'estimació cal tenir en compte l'estimació directament.
 
@@ -215,11 +217,12 @@ Ejercicios de ampliación
   ### Preprocessat i Postprocessat
     
     #### Preprocessat amb filtre pas baix:
-    S'ha implementat una etapa de preprocessat que consisteix en un filtre de pas baix amb una finestra de 5 mostres. Aquest filtre s'aplica al senyal original de forma completa abans de la divisió en trames (frames).
+    Després s'ha implementat una etapa de preprocessat que consisteix en un filtre de pas baix amb una finestra de 5 mostres. Aquest filtre s'aplica al senyal original de forma completa abans de la divisió en trames (frames).
 
-    L'objectiu principal d'aquest filtre és atenuar les components d'alta freqüència i el soroll de quantificació que poden interferir en el càlcul de l'autocorrelació. En suavitzar la forma d'ona, s'aconsegueix que els pics de la funció d'autocorrelació siguin més clars i definits, reduint els errors on es confon la veu amb soroll (Voiced as Unvoiced). A diferència d'altres tècniques més agressives com el clipping, la mitjana mòbil preserva millor l'energia del senyal en els segments de baixa amplitud.
+    L'objectiu principal d'aquest filtre és atenuar les components d'alta freqüència i el soroll de quantificació que poden interferir en el càlcul de l'autocorrelació. En suavitzar la forma d'ona, s'aconsegueix que els pics de la funció d'autocorrelació siguin més clars i definits, reduint els errors on es confon la veu amb soroll (Voiced as Unvoiced). 
 
     El codi que hem implementat per dur a terme el preprocessat ha estat el següent:
+
     ```cpp
     if (x.size() > 5) {
       vector<float> x_filtered = x;
@@ -241,6 +244,7 @@ Ejercicios de ampliación
   Un cop obtingut el vector de freqüències fonamentals estimades, hem aplicat un filtre de mediana de longitud 3. Aquest pas de postprocesat és fonamental per eliminar els anomenats spikes o errors puntuals de l'estimador. El filtre de mediana és molt eficaç eliminant les decisions errònies de sonoritat en trames de transició, ja que ignora els valors atípics (outliers) sense suavitzar excessivament els contorns d'entonació reals. La tria d'una finestra de 3 mostres permet corregir errors aïllats sense introduir un retard significatiu ni perdre la variabilitat natural de la veu.
 
   El codi que hem implementat per dur a terme el preprocessat ha estat el següent:
+
   ```cpp
   vector<float> f0_filtered = f0; // Copia para no modificar mientras leemos
 
@@ -258,27 +262,30 @@ Ejercicios de ampliación
   ```
 
   Els resultat d'utilitzar aquestes tècniques ens donen el següent resultat quan estimem el pitch.
-  | Métrica | Resultado |
-  | :--- | :--- |
-  | **Total de Frames** | 11200 --> 7045 sords / 4155 sonors |
-  | **Unvoiced frames as voiced** | 357 / 7045  (5.07 %) |
-  | **Voiced frames as unvoiced** | 284 / 4155  (6.84 %) |
-  | **Gross voiced errors (+20.00 %)** | 75 / 3871 (1.94 %) |
-  | **MSE of fine errors** | 2.68 % |
-  | **TOTAL SCORE** | **91.00 %** |
+  ```cpp
+      ### Summary
+      Num. frames:    11200 = 7045 unvoiced + 4155 voiced
+      Unvoiced frames as voiced:      357/7045 (5.07 %)
+      Voiced frames as unvoiced:      284/4155 (6.84 %)
+      Gross voiced errors (+20.00 %): 75/3487 (1.94 %)
+      MSE of fine errors:     2.68 %
+
+      ===>    TOTAL:  91.00 %
+      --------------------------
+  ```
 
 
   #### Conclusions de l'Impacte del Pre i Post-processat
 
-  L'anàlisi comparativa entre el sistema base amb ZCR (90.64%) i el sistema complet amb pre/post-processat (91.00%) permet extreure les següents conclusions:
+  L'anàlisi comparativa entre el sistema base amb ZCR (90.64%) i el sistema complet amb preprocessat i postprocessat (91.00%) permet extreure les següents conclusions:
 
-  * **Millora en la detecció de sonoritat:** El filtre de mitjana mòbil ha reduït l'error de trames sonores perdudes (*Voiced as unvoiced*) en un **4.21%**, demostrant ser eficaç per ressaltar la periodicitat en segments de veu febles.
-  * **Correcció d'errors grossos:** El filtre de mediana ha aconseguit reduir els *Gross Errors* per sota del 2%, eliminant pics de freqüència aïllats.
+  * **Millora en la detecció de sonoritat:** s'ha reduït l'error de trames sonores perdudes (*Voiced as unvoiced*) en un **4.21%**, demostrant que és eficaç per ressaltar la periodicitat en segments de veu febles.
+  * **Correcció d'errors grossos:** s'ha reduir els *Gross Errors* per sota del 2%, eliminant pics de freqüència aïllats.
   * **Balanç Final:** Tot i un lleuger augment en la classificació de soroll com a veu, el sistema presenta un comportament molt més estable i una precisió global superior, assolint el **91.00%**.
 
 
   ### Cepstrum i Autocorrelació
-    Hem usat el cepstrum per determinar sobre quinens mostres estaria el nostre pitch i d'allà calculem l'autocorrelació al voltnat d'aquelles mostres per tenir una cerca del pitch computacionalment més bona atés que calcular l'autocorrelació és més car, per tant quan menys mostres usem millor. En aquest cas, no hem tingut en compte ni el preprocessat ni el postprocessat.
+    Hem usat el cepstrum per determinar sobre quinens mostres estaria el nostre pitch i d'allà calculem l'autocorrelació al voltnat d'aquelles mostres per tenir una cerca del pitch computacionalment més bona atés que calcular l'autocorrelació és més car, per tant quant menys mostres usem millor. En aquest cas, no hem tingut en compte ni el preprocessat ni el postprocessat.
 
     Per no fer el canvi de forma permanent, s'ha creat una variable al docopt de forma boolean perqué l'usuari pogui escollir si desitja operar amb el cepstrum o amb l'autocorrelació. La variable usada ha estat:
      *-c, --activar_ceps    Activa el càlcul del Cepstrum per trobar el pitch [Default: false]*
@@ -336,7 +343,7 @@ Ejercicios de ampliación
     ```
     **B) Càlcul del pic del cesptrum o l'autocorrelació**
 
-    Per estimar el segon pic del cepstrum o l'autocorrelació hem fet us del codi mencionat abaix, a més a més s'ha de tenir en conta que s'ha fet la funció perqué depenent de si l'activar_ceps està activa calculi el pitch a partir de la funció del cepstrum i en cas de que no ho estigui faci us de l'autocorrelació directament: 
+    Per estimar el segon pic del cepstrum o l'autocorrelació hem fet ús del codi mencionat abaix, a més a més s'ha de tenir en compte que s'ha fet la funció perqué depenent de si l'activar_ceps està activa calculi el pitch a partir de la funció del cepstrum i en cas de que no ho estigui faci us de l'autocorrelació directament: 
 
     ```cpp
       bool usar_cepstrum = activar_ceps;
@@ -420,11 +427,11 @@ Ejercicios de ampliación
 
 Un cop finalitzat el procés d'optimització i integració de les diferents tècniques, es poden extreure les següents conclusions sobre el desenvolupament del detector de pitch:
 
-1. **Impacte de la Robustesa:** L'assoliment del 91.63% d'èxit és el resultat directe de combinar anàlisi temporal (autocorrelació) i espectral (Cepstrum). Mentre que el Cepstrum per si sol presentava una taxa de trames sonores perdudes elevada (16.08%), la seva integració com a guia per a l'autocorrelació ha permès refinar la detecció de silenci, baixant el soroll confós amb veu (*Unvoiced as voiced*) a un mínim del 4.05%.
+1. **Impacte de la Robustesa:** El fet d'aconseguir el 91.63% d'èxit és el resultat directe de combinar anàlisi temporal (autocorrelació) i espectral (Cepstrum). Mentre que el Cepstrum per si sol presentava una taxa de trames sonores perdudes elevada (16.08%), utilitzar-lo com a guia per a l'autocorrelació ha permès millorar la detecció de silenci, baixant el soroll confós amb veu (*Unvoiced as voiced*) a un mínim del 4.05%.
 
-2. **Sinergia entre Pre i Post-processat:** S'ha demostrat que el tractament de la senyal és tan important com l'algorisme d'estimació. El filtre de mitjana mòbil ha estat el factor clau per "salvar" trames de veu de baixa energia (reduint el *Voiced as unvoiced* significativament), mentre que el filtre de mediana ha garantit la continuïtat melòdica eliminant els *spikes* o errors d'octava aïllats.
+2. **Pre i Post-processat:** S'ha demostrat que és igual d'important el tractament de la senyal com l'algorisme d'estimació. El filtre pas baix ha estat clau per "salvar" trames de veu de baixa energia (reduint el *Voiced as unvoiced* significativament), mentre que el filtre de mediana ha garantit la continuïtat melòdica eliminant els *spikes* o errors d'octava aïllats.
 
-3. **Importància de l'Ajust de Paràmetres (Grid Search):** L'ús dels scripts d'optimització ha permès trobar un punt d'equilibri crític. L'ajust del llindar de ZCR a 0.10 i la potència a -50 dB ha permès que el sistema sigui prou sensible per detectar veu feble però prou selectiu per no disparar-se amb el soroll de fons.
+3. **Importància de l'Ajust de Paràmetres (Grid Search):** L'ús dels scripts d'optimització ha permès trobar un punt d'equilibri crític. L'ajust del llindar de ZCR a 0.10, la potència a -50 dB, l'umbral rmaxnorm a 0.34 i l'umbral r1norm a 0.23 han permès que el sistema sigui prou sensible per detectar veu feble però prou selectiu per no disparar-se amb el soroll de fons.
 
 4. **Compromís Precisió-Robustesa:** S'observa que, a mesura que el sistema es torna més robust contra errors grossos, el MSE (error fi) tendeix a estabilitzar-se al voltant del 2.7%. Això és un compromís acceptable.
 
