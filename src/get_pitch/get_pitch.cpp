@@ -31,9 +31,9 @@ Usage:
     get_pitch --version
 
 Options:
-    -p, --pot FLOAT       llindar de potència per la decisió sonor/sord [Default: -52]
+    -p, --pot FLOAT       llindar de potència per la decisió sonor/sord [Default: -50]
     -1, --r1norm FLOAT    llindar de correlació de 1 per la decisió sonor/sord [Default: 0.23]
-    -M, --rmaxnorm FLOAT  llindar de correlació al max secundari per la decisió sonor/sord [Default: 0.27]
+    -M, --rmaxnorm FLOAT  llindar de correlació al max secundari per la decisió sonor/sord [Default: 0.34]
     -z, --zcr FLOAT       llindar de taxa de zero cross rate [Default: 0.1]
     -c, --activar_ceps    Activa el càlcul del Cepstrum per trobar el pitch [Default: true]
     -h, --help  Show this screen
@@ -50,6 +50,9 @@ int main(int argc, const char *argv[]) {
 	/// \TODO 
 	///  Modify the program syntax and the call to **docopt()** in order to
 	///  add options and arguments to the program.
+
+  /// \DONE
+  /// Hemos añadido los parámetros de zero crossing, cepstrum, los lindares de correlación r1norm y rmaxnorm y el lindar de potencia.
     std::map<std::string, docopt::value> args = docopt::docopt(USAGE,
         {argv + 1, argv + argc},	// array of arguments, without the program name
         true,    // show help if requested
@@ -81,27 +84,10 @@ int main(int argc, const char *argv[]) {
   /// Preprocess the input signal in order to ease pitch estimation. For instance,
   /// central-clipping or low pass filtering may be used.
 
-  
-// 1. Encontrar el valor máximo absoluto del frame para calcular el umbral
-/*float max_val = 0;
-for (const auto& sample : x) {
-    if (fabs(sample) > max_val) max_val = fabs(sample);
-}
-
-// 2. Definir el umbral (típicamente entre el 10% y el 30%, probemos con 30% -> 0.3)
-float clipping_threshold = max_val * 0.1;
-
-// 3. Aplicar el clipping a cada muestra del frame
-for (auto& sample : x) {
-    if (sample > clipping_threshold) {
-        sample -= clipping_threshold;
-    } else if (sample < -clipping_threshold) {
-        sample += clipping_threshold;
-    } else {
-        sample = 0;
-    }
-}
-*/
+  /// \DONE
+  /// Hemos aplicado un filtro paso bajo de media 5 muestras sobre la señal completa. 
+  /// El objetivo es atenuar componentes espectrales de alta frecuencia que no corresponden al 
+  /// rango del pitch humano, mejorando así la robustez del estimador y disminuyendo los Gross Errors.
 
 //Preprocesado: filtro paso-bajo
 if (x.size() > 5) {

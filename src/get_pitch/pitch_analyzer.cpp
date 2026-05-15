@@ -70,7 +70,7 @@ namespace upc {
 
     npitch_max = 1 + (unsigned int) samplingFreq/min_F0;
 
-    //frameLen should include at least 2*T0
+    ///frameLen should include at least 2*T0
     if (npitch_max > frameLen/2)
       npitch_max = frameLen/2;
   }
@@ -130,16 +130,14 @@ namespace upc {
 
    
    vector<float>::const_iterator iR, iRMax, iter;
+    /// \TODO Find the lag of the maximum value of the autocorrelation away from the origin.
+    /// Choices to set the minimum value of the lag are:
+    /// The first negative value of the autocorrelation.
+    /// The lag corresponding to the maximum value of the pitch.
+    ///     .
+    /// In either case, the lag should not exceed that of the minimum value of the pitch.
 
-    /// \TODO 
-	  /// Find the lag of the maximum value of the autocorrelation away from the origin.<br>
-	  /// Choices to set the minimum value of the lag are:
-  	///    - The first negative value of the autocorrelation.
-  	///    - The lag corresponding to the maximum value of the pitch.
-    ///	   .
-  	/// In either case, the lag should not exceed that of the minimum value of the pitch.
-
-   /***\DONE 
+   /** *\DONE 
    * Hemos localizado el lag del valor máximo de la autocorrelación fuera del origen.
    * Se ha optado por iniciar la búsqueda en npitch_min, que corresponde al periodo 
    * de la frecuencia de pitch máxima permitida (opción 2 del enunciado).
@@ -222,8 +220,9 @@ namespace upc {
    // 4. Omplir part real, imag = 0
       fill(spec.begin(), spec.end(), 0.0f);
       copy(logmag.begin(), logmag.end(), spec.begin());
+      
 
-   // 5. IFFT → cepstrum
+   // 5. IFFT --> cepstrum
       fft.do_ifft(spec.data(), buf.data());
       fft.rescale(buf.data());
 
