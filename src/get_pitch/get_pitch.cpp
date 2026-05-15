@@ -13,8 +13,12 @@
 #define FRAME_LEN   0.030 /* 30 ms. */
 #define FRAME_SHIFT 0.015 /* 15 ms. */
 
+#include <algorithm>
+
 using namespace std;
 using namespace upc;
+
+
 
 static const char USAGE[] = R"(
 get_pitch - Pitch Estimator 
@@ -29,6 +33,7 @@ Options:
     -1, --r1norm FLOAT    llindar de correlació de 1 per la decisió sonor/sord [Default: 0.38]
     -M, --rmaxnorm FLOAT  llindar de correlació al max secundari per la decisió sonor/sord [Default: 0.38]
     -z, --zcr FLOAT       llindar de taxa de zero cross rate [Default: 0.25]
+    -c, --activar_ceps    Activa el càlcul del Cepstrum per trobar el pitch [Default: false]
     -h, --help  Show this screen
     --version   Show the version of the project
     
@@ -54,9 +59,8 @@ int main(int argc, const char *argv[]) {
   float llindar_zcr = stof(args["--zcr"].asString());
   float llindar_r1norm = stof(args["--r1norm"].asString());
   float llindar_rmaxnorm = stof(args["--rmaxnorm"].asString());
+  bool activar_ceps = args["--activar_ceps"].asBool();
 
-  
-  
   // Read input sound file
   unsigned int rate;
   vector<float> x;
@@ -69,7 +73,7 @@ int main(int argc, const char *argv[]) {
   int n_shift = rate * FRAME_SHIFT;
 
   // Define analyzer --> Constructor, passar llindars
-  PitchAnalyzer analyzer(n_len, rate, PitchAnalyzer::HAMMING, 50, 500, llindar_pot, llindar_r1norm, llindar_rmaxnorm, llindar_zcr);
+  PitchAnalyzer analyzer(n_len, rate, PitchAnalyzer::HAMMING, 50, 500, llindar_pot, llindar_r1norm, llindar_rmaxnorm, llindar_zcr, activar_ceps);
 
   /// \TODO
   /// Preprocess the input signal in order to ease pitch estimation. For instance,
@@ -86,6 +90,8 @@ int main(int argc, const char *argv[]) {
   /// \TODO
   /// Postprocess the estimation in order to supress errors. For instance, a median filter
   /// or time-warping may be used.
+  
+
 
   // Write f0 contour into the output file
   ofstream os(output_txt);

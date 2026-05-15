@@ -170,8 +170,116 @@ Ejercicios de ampliación
   por implementar el filtro de mediana, se valorará el análisis de los resultados obtenidos en función de
   la longitud del filtro.
 
+  ### Cepstrum i Autocorrelació
+    Hem usat el cepstrum per determinar sobre quinens mostres estaria el nostre pithc i d'alla calculem l'autocorrelació al voltnat d'aquelles mostres per tenir una cerca del pitch computacionalment més bona atés que calcular l'autocorrelació és més car, per tant quan menys mostres usem millor.
+
+    Per no fer el canvi de forma permanent, s'ha creat una variable al docopt de forma boolean perqué l'usuari pogui escollir si desitja operar amb el cepstrum o amb l'autocorrelació. La variable usada ha estat:
+     *-c, --activar_ceps    Activa el càlcul del Cepstrum per trobar el pitch [Default: false]*
+
+
+    **A) Càlcul dels indexs del cepstrum**
+      Per fer-ho, hem fet la funció cepstrum, la qual ha fet us de la llibreria FFT de Fastest Fourier Transform in the West (FFTW) per calcular la FFT i la IFFT. Aquesta funció segueix els passos següents:
+       1. Zero Padding (cal fer-la amb mida potència de 2, tipus 2^ceil(log2(N)))
+       2. |X| = sqrt(real^2 + imag^2)
+       3. log(|X| + epsilon)
+       4. IFFT del log-espectre
+       5. c[n] = part real de la IFFT    
+
+    ```cpp
+       void PitchAnalyzer::cepstrum(const vector<float> &x, vector<float> &c) const {
+
+      // Assegurar que N cobreix fins a lag=320 sense fer aliasing (N > 2*npitch_max)
+      unsigned int N = 1024;
+      while (N < x.size() * 2) N <<= 1;
+      ffft::FFTReal<float> fft(N);
+      // 1. Pre-èmfasi i Zero-padding
+          vector<float> buf(N, 0.0f);
+          buf[0] = x[0];
+          for(unsigned int i = 1; i < x.size(); ++i) {
+              buf[i] = x[i] - 0.97f * x[i-1]; // Filtre de pre-èmfasi
+          }
+        
+      // 2. FFT
+          vector<float> spec(N);
+          fft.do_fft(spec.data(), buf.data());
+
+      // 3. Log-magnitud (format packed)
+          vector<float> logmag(N/2 + 1);
+          for (unsigned int k = 0; k <= N/2; ++k) {
+            float re = spec[k];
+            float im = (k == 0 || k == N/2) ? 0.0f : spec[N/2 + k];
+            logmag[k] = log(sqrt(re*re + im*im) + 1e-10f);
+          }
+
+      // 4. Omplir part real, imag = 0
+          fill(spec.begin(), spec.end(), 0.0f);
+          copy(logmag.begin(), logmag.end(), spec.begin());
+
+      // 5. IFFT → cepstrum
+          fft.do_ifft(spec.data(), buf.data());
+          fft.rescale(buf.data());
+
+      // 6. Copiar a c
+          for (unsigned int i = 0; i < c.size(); ++i)
+            c[i] = buf[i];
+        }
+    ```
+    **B)Càlcul del pic del cesptrum o l'autocorrelació**
+      Per estimar el segon pic del cepstrum o l'autocorrelació hem fet us del codi mencionat abaix, a més a més s'ha de tenir en conta que s'ha fet la funció perqué depenent de si l'activar_ceps està activa calculi el pitch a partir de la funció del cepstrum i en cas de que no ho estigui faci us de l'autocorrelació directament: 
+
+    ```cpp
+      bool usar_cepstrum = activar_ceps;
+      iter = usar_cepstrum ? c.begin() : r.begin();
+      for(iR= iRMax = iter + npitch_min ; iR < iter + npitch_max ; iR++){
+            if (*iR > *iRMax){
+              iRMax =iR;
+          }
+        }
+      
+      unsigned int lag = iRMax - iter; 
+    ```
+
+    **C) Càlcul del pitch desde el segon pic secundari**
+      Hem fet us de la funció de cepstrum per trobar el pitch, seguint els següents passos:
+       1. Calcular el cepstrum del frame amb la funció cepstrum mencionada en l'apartat A)
+       2. Localitzar el màxim secundari del cepstrum entre les posicions corresponents a 50 Hz i 500 Hz(lag entre 160 i 320)
+       3. Calcular rmaxnorm = c[lag] / c[0] i r1norm = c[1] / c[0]
+       4. Aplicar la regla de decisió sonor/sord amb els llindars corresponents tenint en compte el nou pitch calculat lag:
+
+    ```cpp
+        // Si hem usat el cepstrum, el pic d'autocorrelació pot estar lleugerament desplaçat.
+        // Busquem el màxim local de l'autocorrelació al voltant del lag trobat.
+        float r_max_val = r[lag];
+        if (activar_ceps) {
+            int search_range = 3; // Marge de cerca
+            for (int k = -search_range; k <= search_range; ++k) {
+                int current_lag = lag + k;
+                if (current_lag >= 0 && current_lag < (int)r.size()) {
+                    if (r[current_lag] > r_max_val) {
+                        r_max_val = r[current_lag];
+                    }
+                }
+            }
+        }
+    ```   
+  
+  **Resultats després de fer run_get_pitch -c:**
+  ```cpp
+    ### Summary
+      Num. frames:    11200 = 7045 unvoiced + 4155 voiced
+      Unvoiced frames as voiced:      165/7045 (2.34 %)
+      Voiced frames as unvoiced:      668/4155 (16.08 %)
+      Gross voiced errors (+20.00 %): 32/3487 (0.92 %)
+      MSE of fine errors:     2.33 %
+
+      ===>    TOTAL:  89.47 %
+      --------------------------
+  ```
+    El resultat ha empitjorat envers al que teniem. 
+
   ### Afegir ZCR com a nou paràmetre
     La primera millora probada ha estat afegir el parametre de zcr per poder evaluar millor si és tracta d'un so sonor o bé sord, ja que si la zcr és alta voldrà dir que es sord.
+    
     Per tant s'ha modificat el programa per considerar un nou llindar anomenat llindar_zcr, tant al codi com al docopt, que se li ha atribuit un valor de 0.25 de default. A més a més cal tenir en compte que per poder evaluar diferents valors, s'ha hagut de : 
     
     * Afegir el "$@" a scripts/run_get_pitch.sh, línia  13, dins de la comanda que crida get_pitch:

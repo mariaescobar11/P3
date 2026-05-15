@@ -34,11 +34,16 @@ namespace upc {
     float llindar_r1norm;///< llindar de correlacio de 1
     float llindar_rmaxnorm;///< llindar de correlació al max fora de l'origen
     float llindar_zcr;///< llindar de taxa de creuament per zero
- 
+    bool activar_ceps;///< activar cepstrum (true) o autocorrelacio (false)
+
 	///
 	/// Computes correlation from lag=0 to r.size()
 	///
     void autocorrelation(const std::vector<float> &x, std::vector<float> &r) const;
+	///
+	/// Computes cepstrum from lag=0 to c.size()
+	///
+    void cepstrum(const std::vector<float> &x, std::vector<float> &c) const;
 
 	///
 	/// Returns the pitch (in Hz) of input frame x
@@ -60,7 +65,8 @@ namespace upc {
           float llindar_pot = -49,
           float llindar_r1norm = 0.38,
           float llindar_rmaxnorm = 0.38,
-          float llindar_zcr = 0.25
+          float llindar_zcr = 0.25,
+          bool activar_ceps = false
 				 )
 	{
       frameLen = fLen;
@@ -71,6 +77,7 @@ namespace upc {
       this->llindar_r1norm = llindar_r1norm;
       this->llindar_rmaxnorm = llindar_rmaxnorm;
       this->llindar_zcr = llindar_zcr;
+      this->activar_ceps = activar_ceps;
 
     }
 
