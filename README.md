@@ -114,13 +114,15 @@ Ejercicios básicos
 
   Tabla con la tasa de error y el *score* TOTAL:
 
-  | Métrica | Resultado |
-  | :--- | :--- |
-  | Unvoiced frames as voiced | 5/113 (4.42 %) |
-  | Voiced frames as unvoiced | 4/87 (4.60 %) |
-  | Gross voiced errors (+20.00 %) | 0/83 (0.00 %) |
-  | MSE of fine errors | 2.54 % |
-  | **TOTAL SCORE** | **93.00 %** |
+**Num. frames: 11200 = 7045 unvoiced + 4155 voiced**
+
+| Métrica | Resultado |
+| :--- | :--- |
+| Unvoiced frames as voiced | 303/7045 (4.30 %) |
+| Voiced frames as unvoiced | 442/4155 (10.64 %) |
+| Gross voiced errors (+20.00 %) | 82/3713 (2.21 %) |
+| MSE of fine errors | 2.05 % |
+| **TOTAL SCORE** | **90.50 %** |
 
   ### Parámetros finales utilizados:
   * **Umbral de potencia (`-p`):** -49 dB
@@ -129,8 +131,7 @@ Ejercicios básicos
   * **Ventana:** Hamming
 
 
-  Hemos conseguido reducir el Gross voiced errors al 0.00%, lo que indica que el estimador es muy robusto frente a errores de octava o capturas de armónicos no deseados. Este resultado se obtiene al implementar la ventana de Hamming, porque como suaviza los bordes de los frames, elimina las discontinuidades que suelen causar picos falsos en la autocorrelación. Esto garantiza que, siempre que el sistema detecta voz, la frecuencia fundamental calculada será fiable.
-
+El porcentaje de Gross Errors es bastante bajo (2.21%) y el del MSE también (2.05%). Esto demuestran que el algoritmo es muy preciso y fiable cuando detecta la presencia de voz. Los errores de octava son mínimos. El error principal está en los Voiced frames as unvoiced (10.64%). Esto indica que el sistema tiende a ser conservador y etiqueta como sordos (f0=0) algunos segmentos que contienen voz, probablemente en zonas de baja energía o transiciones.
 
 
 Ejercicios de ampliación
