@@ -114,24 +114,24 @@ Ejercicios básicos
 
   Tabla con la tasa de error y el *score* TOTAL:
 
-**Num. frames: 11200 = 7045 unvoiced + 4155 voiced**
+  **Num. frames: 11200 = 7045 unvoiced + 4155 voiced**
 
-| Métrica | Resultado |
-| :--- | :--- |
-| Unvoiced frames as voiced | 303/7045 (4.30 %) |
-| Voiced frames as unvoiced | 442/4155 (10.64 %) |
-| Gross voiced errors (+20.00 %) | 82/3713 (2.21 %) |
-| MSE of fine errors | 2.05 % |
-| **TOTAL SCORE** | **90.50 %** |
+  | Métrica | Resultado |
+  | :--- | :--- |
+  | Unvoiced frames as voiced | 303/7045 (4.30 %) |
+  | Voiced frames as unvoiced | 442/4155 (10.64 %) |
+  | Gross voiced errors (+20.00 %) | 82/3713 (2.21 %) |
+  | MSE of fine errors | 2.05 % |
+  | **TOTAL SCORE** | **90.50 %** |
 
-  ### Parámetros finales utilizados:
-  * **Umbral de potencia (`-p`):** -49 dB
-  * **Umbral de rmaxnorm (`-M`):** 0.36
-  * **Umbral de r1norm (`-1`):** 0.36
-  * **Ventana:** Hamming
+    ### Parámetros finales utilizados:
+    * **Umbral de potencia (`-p`):** -49 dB
+    * **Umbral de rmaxnorm (`-M`):** 0.36
+    * **Umbral de r1norm (`-1`):** 0.36
+    * **Ventana:** Hamming
 
 
-El porcentaje de Gross Errors es bastante bajo (2.21%) y el del MSE también (2.05%). Esto demuestran que el algoritmo es muy preciso y fiable cuando detecta la presencia de voz. Los errores de octava son mínimos. El error principal está en los Voiced frames as unvoiced (10.64%). Esto indica que el sistema tiende a ser conservador y etiqueta como sordos (f0=0) algunos segmentos que contienen voz, probablemente en zonas de baja energía o transiciones.
+    El porcentaje de Gross Errors es bastante bajo (2.21%) y el del MSE también (2.05%). Esto demuestran que el algoritmo es muy preciso y fiable cuando detecta la presencia de voz. Los errores de octava son mínimos. El error principal está en los Voiced frames as unvoiced (10.64%). Esto indica que el sistema tiende a ser conservador y etiqueta como sordos (f0=0) algunos segmentos que contienen voz, probablemente en zonas de baja energía o transiciones.
 
 
 Ejercicios de ampliación
