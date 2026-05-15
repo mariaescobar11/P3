@@ -127,10 +127,10 @@ Ejercicios básicos
       | **TOTAL SCORE** | **90.50 %** |
 
       ### Parámetros finales utilizados:
-        * Umbral de potencia (`-p`):** -49 dB
-        * Umbral de rmaxnorm (`-M`):** 0.36
-        * Umbral de r1norm (`-1`):** 0.36
-        * Ventana:** Hamming
+       * Umbral de potencia (`-p`):** -49 dB
+       * Umbral de rmaxnorm (`-M`):** 0.36
+       * Umbral de r1norm (`-1`):** 0.36
+       * Ventana:** Hamming
 
 
       El porcentaje de Gross Errors es bastante bajo (2.21%) y el del MSE también (2.05%). Esto demuestran que el algoritmo es muy preciso y fiable cuando detecta la presencia de voz. Los errores de octava son mínimos. El error principal está en los Voiced frames as unvoiced (10.64%). Esto indica que el sistema tiende a ser conservador y etiqueta como sordos (f0=0) algunos segmentos que contienen voz, probablemente en zonas de baja energía o transiciones.
@@ -260,7 +260,7 @@ Ejercicios de ampliación
   Els resultat d'utilitzar aquestes tècniques ens donen el següent resultat quan estimem el pitch.
   | Métrica | Resultado |
   | :--- | :--- |
-  | **Total de Frames** | 11200  7045 sords / 4155 sonors |
+  | **Total de Frames** | 11200 --> 7045 sords / 4155 sonors |
   | **Unvoiced frames as voiced** | 357 / 7045  (5.07 %) |
   | **Voiced frames as unvoiced** | 284 / 4155  (6.84 %) |
   | **Gross voiced errors (+20.00 %)** | 75 / 3871 (1.94 %) |
