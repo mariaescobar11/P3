@@ -212,7 +212,7 @@ Ejercicios de ampliación
     run_get_pitch -c -z 0.10 --pot=-52 -1 0.23 -M 0.27 
     ```
     
-  ## Preprocessat i Postprocessat
+  ### Preprocessat i Postprocessat
     
     #### Preprocessat amb filtre pas baix:
     S'ha implementat una etapa de preprocessat que consisteix en un filtre de pas baix amb una finestra de 5 mostres. Aquest filtre s'aplica al senyal original de forma completa abans de la divisió en trames (frames).
@@ -351,11 +351,11 @@ Ejercicios de ampliación
 
     **C) Càlcul del pitch desde el segon pic secundari**
 
-    Hem fet us de la funció de cepstrum per trobar el pitch, seguint els següents passos:
-       * ** Calcular el cepstrum del frame amb la funció cepstrum mencionada en   l'apartat A)
-       * **Localitzar el màxim secundari del cepstrum entre les posicions corresponents a 50 Hz i 500 Hz(lag entre 160 i 320)
-       * **Calcular rmaxnorm = c[lag] / c[0] i r1norm = c[1] / c[0]
-       * **Aplicar la regla de decisió sonor/sord amb els llindars corresponents tenint en compte el nou pitch calculat lag:
+    Hem fet ús de la funció de cepstrum per trobar el pitch, seguint els següents passos:
+    * Calcular el cepstrum del frame amb la funció cepstrum mencionada en l'apartat A).
+    * Localitzar el màxim secundari del cepstrum entre les posicions corresponents a 50 Hz i 500 Hz (lag entre 160 i 320).
+    * Calcular rmaxnorm = c[lag] / c[0] i r1norm = c[1] / c[0].
+    * Aplicar la regla de decisió sonor/sord amb els llindars corresponents tenint en compte el nou pitch calculat (lag).
 
     ```cpp
         // Si hem usat el cepstrum, el pic d'autocorrelació pot estar lleugerament desplaçat.
