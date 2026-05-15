@@ -310,6 +310,36 @@ Ejercicios de ampliación
 
     El seu efecte és petit perquè el pitch es mesura amb autocorrelació, i el ZCR només ajuda a la decisió sonor/sord (si el frame té pitch o no). Dona +0.3% de score, però per millorar l'estimació cal tenir en compte l'estimació directament.
 
+  ### Optimitzant paràmetres i usant Postprocessat, Preprocessat i Cepstrum
+    Després de provar diferents combinacions de paràmetres i tècniques, hem arribat a la següent configuració final, que ens ha proporcionat un score del 90.50%:
+  
+    -z 0.10 --pot=-52 -1 0.23 -M 0.27 amb un encert de 91.29%
+
+    * **Umbral de potencia (`-p`):** -52 dB
+    * **Umbral de rmaxnorm (`-M`):** 0.27
+    * **Umbral de r1norm (`-1`):** 0.23
+    * **Ventana:** Hamming
+    * **Umbral de zcr (`-z`):** 0.10
+    * **Activar cepstrum (`-c`):** true
+      Tabla con la tasa de error y el *score* TOTAL:
+
+    **Num. frames:    11200 = 7045 unvoiced + 4155 voiced**
+
+    | Métrica | Resultado |
+    | :--- | :--- |
+    | Unvoiced frames as voiced | 217/7045 (3.08 %) |
+    | Voiced frames as unvoiced | 382/4155 (9.19 %) |
+    | Gross voiced errors (+20.00 %) | 31/3773 (0.82 %) |
+    | MSE of fine errors | 2.94 % |
+    | **TOTAL SCORE** | **91.29 % %** |
+
+     Aquesta configuració ha estat obtinguda després d'un procés iteratiu d'ajust dels paràmetres i l'addició de tècniques de preprocesat (ventana de Hamming) i postprocesat (filtro de mediana). 
+
+     El preprocesat amb la ventana de Hamming ajuda a reduir les discontinuïtats al principi i al final del frame, millorant la qualitat de l'estimació del pitch. El postprocesat amb un filtro de mediana ajuda a suavitzar les estimacions i eliminar los outliers, reduciendo los errores grossos.
+
+
+
+
 
    
 
