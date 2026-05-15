@@ -205,7 +205,7 @@ Ejercicios de ampliación
     ![Captura del Docopt](image.png)
 
     L'exemple d'us és el següent, on s'ha activat el cepstrum i s'han ajustat els llindars de zcr, potència i correlació per veure com afecta al score total:
-    
+
    ```cpp
     run_get_pitch -c -z 0.10 --pot=-52 -1 0.23 -M 0.27 
     ```
@@ -283,10 +283,10 @@ Ejercicios de ampliación
     **C) Càlcul del pitch desde el segon pic secundari**
 
     Hem fet us de la funció de cepstrum per trobar el pitch, seguint els següents passos:
-      -  Calcular el cepstrum del frame amb la funció cepstrum mencionada en   l'apartat A)
-      -  Localitzar el màxim secundari del cepstrum entre les posicions corresponents a 50 Hz i 500 Hz(lag entre 160 i 320)
-      -  Calcular rmaxnorm = c[lag] / c[0] i r1norm = c[1] / c[0]
-      -  Aplicar la regla de decisió sonor/sord amb els llindars corresponents tenint en compte el nou pitch calculat lag:
+       -  Calcular el cepstrum del frame amb la funció cepstrum mencionada en   l'apartat A)
+       -  Localitzar el màxim secundari del cepstrum entre les posicions corresponents a 50 Hz i 500 Hz(lag entre 160 i 320)
+       -  Calcular rmaxnorm = c[lag] / c[0] i r1norm = c[1] / c[0]
+       -  Aplicar la regla de decisió sonor/sord amb els llindars corresponents tenint en compte el nou pitch calculat lag:
 
     ```cpp
         // Si hem usat el cepstrum, el pic d'autocorrelació pot estar lleugerament desplaçat.
