@@ -29,7 +29,6 @@ Usage:
     get_pitch [options] <input-wav> <output-txt>
     get_pitch (-h | --help)
     get_pitch --version
-
 Options:
     -p, --pot FLOAT       llindar de potència per la decisió sonor/sord [Default: -50]
     -1, --r1norm FLOAT    llindar de correlació de 1 per la decisió sonor/sord [Default: 0.23]
