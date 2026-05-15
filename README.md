@@ -88,50 +88,52 @@ Ejercicios básicos
     y el *score* TOTAL proporcionados por `pitch_evaluate` en la evaluación de la base de datos 
 	`pitch_db/train`..
 
-  Para maximizar la precisión del estimador de pitch, hemos ajustado los umbrales de decisión sonor/sord (unvoiced) a los valores óptimos de -52 dB para la potencia y 0.6 para las correlaciones (Correlación al primer desplazamiento (r1norm) y máximo de la autocorrelación secundaria (rmaxnorm)), además de implementar la ventana de Hamming.
+##  Optimización de la estimación de pitch
 
-  Originalmente, el sistema solo evaluaba la periodicidad mediante la autocorrelación. Hemos mejorado esto añadiendo un umbral de potencia que actúa como filtro previo para eliminar el ruido de fondo. Al descartar los fragmentos con baja energía antes de analizar la autocorrelación, hemos conseguido eliminar prácticamente todos los falsos positivos en las zonas de silencio o ruido.
+  - Para maximizar la precisión del estimador de pitch, hemos ajustado los umbrales de decisión sonor/sord (unvoiced) a los valores óptimos de -52 dB para la potencia y 0.6 para las correlaciones (Correlación al primer desplazamiento (r1norm) y máximo de la autocorrelación secundaria (rmaxnorm)), además de implementar la ventana de Hamming.
 
-  Además hemos cambiado la lógica cuando miramos la autocorrelación para detectar si es sordo o sonoro, ya que haciéndolo de la forma de antes (si el señal superaba el umbral se le asignaba como señal sonoro) era mucho más permisivo que haciéndolo al revés (si el señal no supera el umbral se asigna como sordo). 
+    Originalmente, el sistema solo evaluaba la periodicidad mediante la autocorrelación. Hemos mejorado esto añadiendo un umbral de potencia que actúa como filtro previo para eliminar el ruido de fondo. Al descartar los fragmentos con baja energía antes de analizar la autocorrelación, hemos conseguido eliminar prácticamente todos los falsos positivos en las zonas de silencio o ruido.
 
-  Esta nueva forma es mucho más robusta porque, para que un frame sea detectado como sonoro, ahora debe cumplir todas las condiciones simultáneamente (energía suficiente y alta periodicidad en ambos parámetros).
+    Además hemos cambiado la lógica cuando miramos la autocorrelación para detectar si es sordo o sonoro, ya que haciéndolo de la forma de antes (si el señal superaba el umbral se le asignaba como señal sonoro) era mucho más permisivo que haciéndolo al revés (si el señal no supera el umbral se asigna como sordo). 
 
-  Con estos cambios hemos pasado de un 64% a un 93%.
+    Esta nueva forma es mucho más robusta porque, para que un frame sea detectado como sonoro, ahora debe cumplir todas las condiciones simultáneamente (energía suficiente y alta periodicidad en ambos parámetros).
 
-  Nueva regla de decisión:
+    Con estos cambios hemos pasado de un 64% a un 93%.
 
-  ```cpp
-      if (pot < llindar_pot) {
-          return true; 
-      }
+    Nueva regla de decisión:
 
-      if (r1norm < llindar_r1norm || rmaxnorm < llindar_rmaxnorm) {
-          return true;
-      }
-      return false;
-  ```
+      ```cpp
+          if (pot < llindar_pot) {
+              return true; 
+          }
 
-
-  Tabla con la tasa de error y el *score* TOTAL:
-
-  **Num. frames: 11200 = 7045 unvoiced + 4155 voiced**
-
-  | Métrica | Resultado |
-  | :--- | :--- |
-  | Unvoiced frames as voiced | 303/7045 (4.30 %) |
-  | Voiced frames as unvoiced | 442/4155 (10.64 %) |
-  | Gross voiced errors (+20.00 %) | 82/3713 (2.21 %) |
-  | MSE of fine errors | 2.05 % |
-  | **TOTAL SCORE** | **90.50 %** |
-
-    ### Parámetros finales utilizados:
-    * **Umbral de potencia (`-p`):** -49 dB
-    * **Umbral de rmaxnorm (`-M`):** 0.36
-    * **Umbral de r1norm (`-1`):** 0.36
-    * **Ventana:** Hamming
+          if (r1norm < llindar_r1norm || rmaxnorm < llindar_rmaxnorm) {
+              return true;
+          }
+          return false;
+      ```
 
 
-    El porcentaje de Gross Errors es bastante bajo (2.21%) y el del MSE también (2.05%). Esto demuestran que el algoritmo es muy preciso y fiable cuando detecta la presencia de voz. Los errores de octava son mínimos. El error principal está en los Voiced frames as unvoiced (10.64%). Esto indica que el sistema tiende a ser conservador y etiqueta como sordos (f0=0) algunos segmentos que contienen voz, probablemente en zonas de baja energía o transiciones.
+    Tabla con la tasa de error y el *score* TOTAL:
+
+      **Num. frames: 11200 = 7045 unvoiced + 4155 voiced**
+
+      | Métrica | Resultado |
+      | :--- | :--- |
+      | Unvoiced frames as voiced | 303/7045 (4.30 %) |
+      | Voiced frames as unvoiced | 442/4155 (10.64 %) |
+      | Gross voiced errors (+20.00 %) | 82/3713 (2.21 %) |
+      | MSE of fine errors | 2.05 % |
+      | **TOTAL SCORE** | **90.50 %** |
+
+        ### Parámetros finales utilizados:
+        * **Umbral de potencia (`-p`):** -49 dB
+        * **Umbral de rmaxnorm (`-M`):** 0.36
+        * **Umbral de r1norm (`-1`):** 0.36
+        * **Ventana:** Hamming
+
+
+      El porcentaje de Gross Errors es bastante bajo (2.21%) y el del MSE también (2.05%). Esto demuestran que el algoritmo es muy preciso y fiable cuando detecta la presencia de voz. Los errores de octava son mínimos. El error principal está en los Voiced frames as unvoiced (10.64%). Esto indica que el sistema tiende a ser conservador y etiqueta como sordos (f0=0) algunos segmentos que contienen voz, probablemente en zonas de baja energía o transiciones.
 
 
 Ejercicios de ampliación
