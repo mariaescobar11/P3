@@ -417,7 +417,7 @@ Ejercicios de ampliación
     | Voiced frames as unvoiced | 280/4155 (6.74 %) |
     | Gross voiced errors (+20.00 %) | 84/3875 (2.17 %) |
     | MSE of fine errors | 2.70 % |
-    | **TOTAL SCORE** | **91.63 % %** |
+    | **TOTAL SCORE** | **91.63 %** |
 
      Aquesta configuració ha estat obtinguda després d'un procés iteratiu d'ajust dels paràmetres, l'addició de tècniques de preprocesat (filtre pas baix) i postprocesat (filtre de mediana) i afegint el processat del cepstrum. 
 
