@@ -212,9 +212,9 @@ Ejercicios de ampliación
     run_get_pitch -c -z 0.10 --pot=-52 -1 0.23 -M 0.27 
     ```
     
-  #### Preprocessat i Postprocessat
+  ## Preprocessat i Postprocessat
     
-    ##Preprocessat amb filtre pas baix:
+    #### Preprocessat amb filtre pas baix:
     S'ha implementat una etapa de preprocessat que consisteix en un filtre de pas baix amb una finestra de 5 mostres. Aquest filtre s'aplica al senyal original de forma completa abans de la divisió en trames (frames).
 
     L'objectiu principal d'aquest filtre és atenuar les components d'alta freqüència i el soroll de quantificació que poden interferir en el càlcul de l'autocorrelació. En suavitzar la forma d'ona, s'aconsegueix que els pics de la funció d'autocorrelació siguin més clars i definits, reduint els errors on es confon la veu amb soroll (Voiced as Unvoiced). A diferència d'altres tècniques més agressives com el clipping, la mitjana mòbil preserva millor l'energia del senyal en els segments de baixa amplitud.
@@ -352,10 +352,10 @@ Ejercicios de ampliación
     **C) Càlcul del pitch desde el segon pic secundari**
 
     Hem fet us de la funció de cepstrum per trobar el pitch, seguint els següents passos:
-       -  Calcular el cepstrum del frame amb la funció cepstrum mencionada en   l'apartat A)
-       -  Localitzar el màxim secundari del cepstrum entre les posicions corresponents a 50 Hz i 500 Hz(lag entre 160 i 320)
-       -  Calcular rmaxnorm = c[lag] / c[0] i r1norm = c[1] / c[0]
-       -  Aplicar la regla de decisió sonor/sord amb els llindars corresponents tenint en compte el nou pitch calculat lag:
+       * ** Calcular el cepstrum del frame amb la funció cepstrum mencionada en   l'apartat A)
+       * **Localitzar el màxim secundari del cepstrum entre les posicions corresponents a 50 Hz i 500 Hz(lag entre 160 i 320)
+       * **Calcular rmaxnorm = c[lag] / c[0] i r1norm = c[1] / c[0]
+       * **Aplicar la regla de decisió sonor/sord amb els llindars corresponents tenint en compte el nou pitch calculat lag:
 
     ```cpp
         // Si hem usat el cepstrum, el pic d'autocorrelació pot estar lleugerament desplaçat.
@@ -411,7 +411,7 @@ Ejercicios de ampliación
     | MSE of fine errors | 2.70 % |
     | **TOTAL SCORE** | **91.63 % %** |
 
-     Aquesta configuració ha estat obtinguda després d'un procés iteratiu d'ajust dels paràmetres, l'addició de tècniques de preprocesat (filtre pas-baix) i postprocesat (filtro de mediana) i afegint el processat del cepstrum. 
+     Aquesta configuració ha estat obtinguda després d'un procés iteratiu d'ajust dels paràmetres, l'addició de tècniques de preprocesat (filtre pas baix) i postprocesat (filtre de mediana) i afegint el processat del cepstrum. 
 
 
 
@@ -427,7 +427,7 @@ Un cop finalitzat el procés d'optimització i integració de les diferents tèc
 
 4. **Compromís Precisió-Robustesa:** S'observa que, a mesura que el sistema es torna més robust contra errors grossos, el **MSE** (error fi) tendeix a estabilitzar-se al voltant del 2.7%. Això és un compromís acceptable.
 
-**En resum**, la versió final del sistema representa un detector de pitch d'alta fiabilitat, que combina el millor dels dominis temporal i freqüencial per oferir una resposta estable i precisa davant de locucions diverses.
+En resum, la versió final del sistema representa un detector de pitch d'alta fiabilitat, que combina el millor dels dominis temporal i freqüencial per oferir una resposta estable i precisa davant de locucions diverses.
 
 
 
