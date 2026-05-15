@@ -204,7 +204,7 @@ Ejercicios de ampliación
     El seu efecte és petit perquè el pitch es mesura amb autocorrelació, i el ZCR només ajuda a la decisió sonor/sord (si el frame té pitch o no). Dona +0.3% de score, però per millorar l'estimació cal tenir en compte l'estimació directament.
 
   ### Docopt
-    ![Captura del Docopt](img/docopt.png)
+    ![Captura del Docopt](img/Docopt.png)
 
     L'exemple d'us és el següent, on s'ha activat el cepstrum i s'han ajustat els llindars de zcr, potència i correlació per veure com afecta al score total:
 
@@ -212,7 +212,7 @@ Ejercicios de ampliación
     run_get_pitch -c -z 0.10 --pot=-52 -1 0.23 -M 0.27 
     ```
     
-  ### Preprocessat i Postprocessat
+  #### Preprocessat i Postprocessat
     
     ##Preprocessat amb filtre pas baix:
     S'ha implementat una etapa de preprocessat que consisteix en un filtre de pas baix amb una finestra de 5 mostres. Aquest filtre s'aplica al senyal original de forma completa abans de la divisió en trames (frames).
@@ -237,7 +237,7 @@ Ejercicios de ampliación
   ```
 
 
-  ## Postprocessat amb filtre de mediana:
+  #### Postprocessat amb filtre de mediana:
   Un cop obtingut el vector de freqüències fonamentals estimades, hem aplicat un filtre de mediana de longitud 3. Aquest pas de postprocesat és fonamental per eliminar els anomenats spikes o errors puntuals de l'estimador. El filtre de mediana és molt eficaç eliminant les decisions errònies de sonoritat en trames de transició, ja que ignora els valors atípics (outliers) sense suavitzar excessivament els contorns d'entonació reals. La tria d'una finestra de 3 mostres permet corregir errors aïllats sense introduir un retard significatiu ni perdre la variabilitat natural de la veu.
 
   El codi que hem implementat per dur a terme el preprocessat ha estat el següent:
@@ -268,7 +268,7 @@ Ejercicios de ampliación
   | **TOTAL SCORE** | **91.00 %** |
 
 
-  ## Conclusions de l'Impacte del Pre i Post-processat
+  #### Conclusions de l'Impacte del Pre i Post-processat
 
   L'anàlisi comparativa entre el sistema base amb ZCR (90.64%) i el sistema complet amb pre/post-processat (91.00%) permet extreure les següents conclusions:
 
