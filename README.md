@@ -427,13 +427,13 @@ Ejercicios de ampliación
 
 Un cop finalitzat el procés d'optimització i integració de les diferents tècniques, es poden extreure les següents conclusions sobre el desenvolupament del detector de pitch:
 
-1. **Impacte de la Robustesa:** El fet d'aconseguir el 91.63% d'èxit és el resultat directe de combinar anàlisi temporal (autocorrelació) i espectral (Cepstrum). Mentre que el Cepstrum per si sol presentava una taxa de trames sonores perdudes elevada (16.08%), utilitzar-lo com a guia per a l'autocorrelació ha permès millorar la detecció de silenci, baixant el soroll confós amb veu (*Unvoiced as voiced*) a un mínim del 4.05%.
+* **Impacte de la Robustesa:** El fet d'aconseguir el 91.63% d'èxit és el resultat directe de combinar anàlisi temporal (autocorrelació) i espectral (Cepstrum). Mentre que el Cepstrum per si sol presentava una taxa de trames sonores perdudes elevada (16.08%), utilitzar-lo com a guia per a l'autocorrelació ha permès millorar la detecció de silenci, baixant el soroll confós amb veu (*Unvoiced as voiced*) a un mínim del 4.05%.
 
-2. **Pre i Post-processat:** S'ha demostrat que és igual d'important el tractament de la senyal com l'algorisme d'estimació. El filtre pas baix ha estat clau per "salvar" trames de veu de baixa energia (reduint el *Voiced as unvoiced* significativament), mentre que el filtre de mediana ha garantit la continuïtat melòdica eliminant els *spikes* o errors d'octava aïllats.
+* **Pre i Post-processat:** S'ha demostrat que és igual d'important el tractament de la senyal com l'algorisme d'estimació. El filtre pas baix ha estat clau per "salvar" trames de veu de baixa energia (reduint el *Voiced as unvoiced* significativament), mentre que el filtre de mediana ha garantit la continuïtat melòdica eliminant els *spikes* o errors d'octava aïllats.
 
-3. **Importància de l'Ajust de Paràmetres (Grid Search):** L'ús dels scripts d'optimització ha permès trobar un punt d'equilibri crític. L'ajust del llindar de ZCR a 0.10, la potència a -50 dB, l'umbral rmaxnorm a 0.34 i l'umbral r1norm a 0.23 han permès que el sistema sigui prou sensible per detectar veu feble però prou selectiu per no disparar-se amb el soroll de fons.
+* **Importància de l'Ajust de Paràmetres (Grid Search):** L'ús dels scripts d'optimització ha permès trobar un punt d'equilibri crític. L'ajust del llindar de ZCR a 0.10, la potència a -50 dB, l'umbral rmaxnorm a 0.34 i l'umbral r1norm a 0.23 han permès que el sistema sigui prou sensible per detectar veu feble però prou selectiu per no disparar-se amb el soroll de fons.
 
-4. **Compromís Precisió-Robustesa:** S'observa que, a mesura que el sistema es torna més robust contra errors grossos, el MSE (error fi) tendeix a estabilitzar-se al voltant del 2.7%. Això és un compromís acceptable.
+* **Compromís Precisió-Robustesa:** S'observa que, a mesura que el sistema es torna més robust contra errors grossos, el MSE (error fi) tendeix a estabilitzar-se al voltant del 2.7%. Això és un compromís acceptable.
 
 En resum, la versió final del sistema representa un detector de pitch d'alta fiabilitat, que combina el millor dels dominis temporal i freqüencial per oferir una resposta estable i precisa davant de locucions diverses.
 
